@@ -6,10 +6,10 @@ export function validateTypeCast(preCastType: VarType, postCastType: VarType) {
         throw new NSTypeError(`Cannot cast '${preCastType}' to non numeric type '${postCastType}'`);
 
     if (isString(preCastType) && !isString(postCastType))
-        throw new NSTypeError(`Cannot cast type 'str' to type '${postCastType}. String cannot be cast to non string type'`)
+        throw new NSTypeError(`Cannot cast type 'str' to type '${postCastType}'. Strings cannot be cast to non string types'`)
 
     if (isBoolean(preCastType) && !isBoolean(postCastType))
-        throw new NSTypeError(`Cannot cast type 'bool' to type '${postCastType}. Bool cannot be cast to non bool type'`)
+        throw new NSTypeError(`Cannot cast type 'bool' to type '${postCastType}'. Bools cannot be cast to non bool types'`)
 
     if (isFloat(preCastType) && !isFloat(postCastType))
         throw new NSTypeError(`Cannot cast float type '${preCastType}' to non float type '${postCastType}'`)

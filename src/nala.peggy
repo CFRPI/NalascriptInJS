@@ -1,6 +1,6 @@
 start = line*
 
-line = statement: statement __* {
+line = statement: statement __* newline {
     return statement
 }
 
@@ -259,3 +259,4 @@ singleQuoteStringChar = !'\'' c:. { return c }
 
 _ = [ \t\n\r]*
 __ = [ \t\n\r]
+newline = __* ('\n'/!.)
