@@ -1,0 +1,115 @@
+[
+    {
+        "type": "statement",
+        "statementType": "block",
+        "blockScopeName": {
+            "type": "blockName",
+            "blockName": {
+                "type": "value",
+                "valueType": "literal",
+                "value": "o"
+            }
+        },
+        "blockStatements": [
+            {
+                "type": "statement",
+                "statementType": "variableDeclaration",
+                "variableName": {
+                    "type": "value",
+                    "valueType": "literal",
+                    "value": "a"
+                },
+                "variableType": null,
+                "variableScopeDefinition": null,
+                "value": {
+                    "type": "expression",
+                    "value": {
+                        "type": "value",
+                        "valueType": "integer",
+                        "value": 2,
+                        "dataType": "i32"
+                    }
+                }
+            },
+            {
+                "type": "statement",
+                "statementType": "block",
+                "blockScopeName": {
+                    "type": "blockName",
+                    "blockName": {
+                        "type": "value",
+                        "valueType": "literal",
+                        "value": "inner"
+                    }
+                },
+                "blockStatements": [
+                    {
+                        "type": "statement",
+                        "statementType": "variableDeclaration",
+                        "variableName": {
+                            "type": "value",
+                            "valueType": "literal",
+                            "value": "b"
+                        },
+                        "variableType": null,
+                        "variableScopeDefinition": {
+                            "type": "scopeDefinition",
+                            "scopeDefinitionName": {
+                                "type": "value",
+                                "valueType": "literal",
+                                "value": "o"
+                            },
+                            "scopeDefinitionDefault": {
+                                "type": "unary",
+                                "operator": "-",
+                                "value": {
+                                    "type": "value",
+                                    "valueType": "integer",
+                                    "value": 1,
+                                    "dataType": "i32"
+                                },
+                                "dataType": "i32"
+                            }
+                        },
+                        "value": {
+                            "type": "expression",
+                            "value": {
+                                "type": "value",
+                                "valueType": "integer",
+                                "value": 5,
+                                "dataType": "i32"
+                            }
+                        }
+                    },
+                    {
+                        "type": "statement",
+                        "statementType": "variableDeclaration",
+                        "variableName": {
+                            "type": "value",
+                            "valueType": "literal",
+                            "value": "c"
+                        },
+                        "variableType": "f128",
+                        "variableScopeDefinition": null,
+                        "value": {
+                            "type": "expression",
+                            "value": {
+                                "type": "value",
+                                "valueType": "float",
+                                "value": 3.14,
+                                "dataType": "f32"
+                            }
+                        }
+                    }
+                ],
+                "staticScope": {
+                    "c": "f128"
+                }
+            }
+        ],
+        "staticScope": {
+            "a": "i32",
+            "b": "i32"
+        }
+    }
+]

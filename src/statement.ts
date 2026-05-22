@@ -1,4 +1,4 @@
-import { Expression } from "./expression";
+import { Expression } from "./ast/expression";
 
 export interface StmtExpr{
     type: "statement",

@@ -1,10 +1,26 @@
 start = line*
 
-line = statement: statement __* newline {
+line = statement: statement __* newline? {
     return statement
 }
 
-statement = variableDeclarationStmt / assignmentStatements / stmtExpr
+statement = variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
+
+blockStmt = _ scopeName: blockScopeName? _ '{' _ statements: line*  _ '}' {
+    return {
+        type: "statement",
+        statementType: "block",
+        blockScopeName: scopeName ?? Math.random().toString().substring(2),
+        blockStatements: statements,
+    }
+}
+
+blockScopeName = "@" _ name: literal {
+    return {
+        type: "blockName",
+        blockName: name,
+    }
+}
 
 assignmentStatements = assignmentStatement / additionAssignmentStatement /
     subtractionAssignmentStatement / multiplicationAssignmentStatememnt /
@@ -108,7 +124,7 @@ typeDefinition = ":" _ type: varType {
 varType = "u8" / "u16" / "u32" / "u64" / "u128" / 
         "i8" / "i16" / "i32" / "i64" / "i128" /
         "f8" / "f16" / "f32" / "f64" / "f128" /
-        "str" / "bool"
+        "str" / "bool" / "null"
 
 stmtExpr = expr: expression {
     return {
@@ -180,7 +196,7 @@ typeCast = value: unary _ "as" _ type: varType {
 
 unary = _ operator: ("!" / "-") _ value: unary _ {
     return {
-        "type": "unary",
+        type: "unary",
         operator: operator,
         value: value
     }
@@ -188,17 +204,24 @@ unary = _ operator: ("!" / "-") _ value: unary _ {
 
 
 value = constValue / literal / grouping
-constValue = boolean / string / number 
+constValue = _ operator: ("!" / "-") _ value: constValue _ {
+    return {
+        type: "unary",
+        operator: operator,
+        value: value
+    }
+} / constantLiteral
+constantLiteral = boolean / string / number / null
 
 grouping =  _ '(' _ content: logical _ ')' _  {
     return content
 }
 
-literal = value: [a-zA-Z]+ {
+literal = first: [a-zA-Z$] rest:[a-zA-Z0-9$]* {
     return {
         type: "value",
         valueType: "literal",
-        value: value.join("") 
+        value: first + rest.join("")
     }
 }
 
@@ -233,6 +256,14 @@ boolean = value: ('true' / 'false') {
         type: "value",
         valueType: "boolean",
         value: value == "true"
+    }
+}
+
+null = 'null' {
+    return {
+        type: "value",
+        valueType: "null",
+        value: "null"
     }
 }
 

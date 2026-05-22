@@ -1,4 +1,4 @@
-import { BinaryOperator, UnaryOperator, VarType } from "../expression";
+import { BinaryOperator, UnaryOperator, VarType } from "../ast/expression";
 
 export class NSTypeError extends Error {
     constructor(message: string) {

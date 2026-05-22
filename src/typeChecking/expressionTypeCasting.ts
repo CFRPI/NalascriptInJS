@@ -1,5 +1,5 @@
-import { VarType } from "../expression";
-import { bitSizeForType, isBoolean, isFloat, isNumeric, isSigned, isString, isUnigned, NSTypeError } from "./expressionTypeHandling";
+import { VarType } from "../ast/expression";
+import { bitSizeForType, isBoolean, isFloat, isNumeric, isString, NSTypeError } from "./expressionTypeHandling";
 
 export function validateTypeCast(preCastType: VarType, postCastType: VarType) {
     if (isNumeric(preCastType) && !isNumeric(postCastType))
