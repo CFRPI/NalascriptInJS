@@ -12,21 +12,36 @@ export class NSReferenceError extends Error {
 export class Scope {
     definitions: Definition[]
     block: BlockStatement | null
+    parent: Scope | null
+    lineInParent: number | null
 
-    constructor(block: BlockStatement | null) {
+    constructor(block: BlockStatement | null, parent: Scope | null, lineInParent: number | null) {
         this.definitions = []
         this.block = block
+        this.parent = parent
+        this.lineInParent = lineInParent
+    }
+
+    lookupDefinition(name: string, line: number): Definition | null {
+        for (let definition of this.definitions)
+            if (definition.name == name && line > definition.line)
+                return definition
+
+        let parentLookup = null
+        if (this.parent)
+            parentLookup = this.parent.lookupDefinition(name, this.lineInParent!)
+        return parentLookup;
     }
 }
 
-export function generateScopeDefinitions(stmts: Statement[]) {
+export function generateScopeDefinitions(stmts: Statement[]): Map<string, Scope> {
     let scopes: Map<string, Scope> = new Map();
 
-    const global = new Scope(null);
+    const global = new Scope(null, null, null);
     scopes.set("global", global);
 
-    for (let stmt of stmts) {
-        generateScopeDefinitionsHelper(stmt, global, scopes);
+    for (let stmtNum = 0; stmtNum < stmts.length; stmtNum++) {
+        generateScopeDefinitionsHelper(stmts[stmtNum], global, stmtNum, scopes);
     }
 
     for (let scopeName of scopes.keys()) {
@@ -35,6 +50,8 @@ export function generateScopeDefinitions(stmts: Statement[]) {
         if (scope?.block)
             scope.block.staticScope = getStaticScope(scope);
     }
+
+    return scopes
 }
 
 function getStaticScope(scope: Scope | undefined): StaticScopeTypes {
@@ -42,16 +59,20 @@ function getStaticScope(scope: Scope | undefined): StaticScopeTypes {
 
     let res: StaticScopeTypes = {}
     for (let definition of scope.definitions)
-        res[definition.name] = definition.type;
+        res[definition.name] = {
+            varType: definition.type,
+            line: definition.line
+        }
 
     return res
 }
 
-function generateScopeDefinitionsHelper(stmt: Statement, currentScope: Scope, scopes: Map<string, Scope>) {
+function generateScopeDefinitionsHelper(stmt: Statement, currentScope: Scope, lineInBlock: number, scopes: Map<string, Scope>) {
     if (stmt.statementType == "variableDeclaration") {
         const name = stmt.variableName.value;
         const type = getVariableType(stmt);
         let scopeDefinition = stmt.variableScopeDefinition?.scopeDefinitionName.value
+        let definitionLine = lineInBlock
 
         let scope: Scope
         if (scopeDefinition) {
@@ -59,34 +80,30 @@ function generateScopeDefinitionsHelper(stmt: Statement, currentScope: Scope, sc
                 throw new NSReferenceError(`Attempting to assign variable '${name}' to non existent scope '${scopeDefinition}'`)
 
             scope = scopes.get(scopeDefinition)!
+            lineInBlock = 0 // float to top of block if it is not declared in the default block
         } else {
             scope = currentScope;
         }
 
-        if (scopeHasVariable(scope, name))
+        if (scope.lookupDefinition(name, lineInBlock) != null)
             throw new NSReferenceError(`Attempting to re define variable '${name}'`)
 
-        scope.definitions?.push(new Definition(name, type))
+        scope.definitions?.push(new Definition(name, type, lineInBlock))
     } else if (stmt.statementType == "block") {
         let name = stmt.blockScopeName?.blockName.value
 
-        let selfScope = scopes.get(name)
+        let childScope = scopes.get(name)
 
-        if (!selfScope) {
-            selfScope = new Scope(stmt)
-            scopes.set(name, selfScope)
+        if (!childScope) {
+            childScope = new Scope(stmt, currentScope, lineInBlock)
+            scopes.set(name, childScope)
         }
 
-        for (let subStmt of stmt.blockStatements) {
-            generateScopeDefinitionsHelper(subStmt, selfScope, scopes)
+        for (let subStmtNum = 0; subStmtNum < stmt.blockStatements.length; subStmtNum++) {
+            const subStmt = stmt.blockStatements[subStmtNum]
+            generateScopeDefinitionsHelper(subStmt, childScope, subStmtNum, scopes)
         }
     }
-    
-    console.log("======")
-    console.dir(stmt)
-    console.log("<>")
-    console.dir(scopes)
-    console.log("======")
 }
 
 function getVariableType(stmt: VariableDeclarationStatement): VarType {
@@ -98,15 +115,6 @@ function getVariableType(stmt: VariableDeclarationStatement): VarType {
 
     return type
 }
-
-function scopeHasVariable(scope: Scope, name: string): boolean {
-    for (let definition of scope.definitions ?? []) {
-        if (definition.name == name)
-            return true
-    }
-    return false
-}
-
 
 
 function typeCheckStatement(stmt: Statement) {

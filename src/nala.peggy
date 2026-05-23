@@ -10,7 +10,14 @@ blockStmt = _ scopeName: blockScopeName? _ '{' _ statements: line*  _ '}' {
     return {
         type: "statement",
         statementType: "block",
-        blockScopeName: scopeName ?? Math.random().toString().substring(2),
+        blockScopeName: scopeName ?? {
+            type: "blockName",
+            blockName: {
+                type: "value",
+                valueType: "literal",
+                value: Math.random().toString().substring(2) + "-Anonymous"
+            }
+        },
         blockStatements: statements,
     }
 }
@@ -109,11 +116,15 @@ variableDeclarationStmt = "let" _ scope: scopingDefinition? _ name: literal _ ty
     }
 }
 
-scopingDefinition = "@" _ scopeName: literal "{" value: constValue "}" {
+scopingDefinition = "@" _ scopeName: literal "{" value: constValue? "}" {
     return {
         type: "scopeDefinition",
         scopeDefinitionName: scopeName,
-        scopeDefinitionDefault: value
+        scopeDefinitionDefault: value ?? {
+            type: "value",
+            valueType: "null",
+            value: "null"
+        }
     }
 }
 

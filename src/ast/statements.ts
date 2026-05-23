@@ -1,5 +1,3 @@
-import { Definition } from "../typeChecking/defintion"
-import { Scope } from "../typeChecking/statementTypeChecking"
 import { Expression, LiteralValue, Value, VarType } from "./expression"
 
 // Scoping definition
@@ -87,7 +85,11 @@ export interface BlockStatement {
     staticScope?: StaticScopeTypes
 }
 
-export type StaticScopeTypes = {[key: string]: VarType}
+export type StaticScopeTypes = {[key: string]: {
+        varType: VarType,
+        line: number
+    }
+}
 
 export interface BlockName {
     type: "blockName"
