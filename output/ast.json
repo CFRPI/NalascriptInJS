@@ -7,14 +7,14 @@
             "valueType": "literal",
             "value": "a"
         },
-        "variableType": null,
+        "variableType": "f64",
         "variableScopeDefinition": null,
         "value": {
             "type": "expression",
             "value": {
                 "type": "value",
                 "valueType": "integer",
-                "value": 2,
+                "value": 0,
                 "dataType": "i32"
             }
         }
@@ -25,21 +25,10 @@
         "value": {
             "type": "expression",
             "value": {
-                "type": "binary",
-                "operator": "+",
-                "left": {
-                    "type": "value",
-                    "valueType": "literal",
-                    "value": "a",
-                    "dataType": "null"
-                },
-                "right": {
-                    "type": "value",
-                    "valueType": "integer",
-                    "value": 5,
-                    "dataType": "i32"
-                },
-                "dataType": "null"
+                "type": "value",
+                "valueType": "literal",
+                "value": "a",
+                "dataType": "f64"
             }
         }
     }
