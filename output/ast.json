@@ -1,35 +1,69 @@
 [
     {
         "type": "statement",
-        "statementType": "variableDeclaration",
-        "variableName": {
-            "type": "value",
-            "valueType": "literal",
-            "value": "a"
-        },
-        "variableType": "f64",
-        "variableScopeDefinition": null,
-        "value": {
-            "type": "expression",
-            "value": {
-                "type": "value",
-                "valueType": "integer",
-                "value": 0,
-                "dataType": "i32"
-            }
-        }
-    },
-    {
-        "type": "statement",
-        "statementType": "expression",
-        "value": {
-            "type": "expression",
-            "value": {
+        "statementType": "for",
+        "definition": {
+            "type": "statement",
+            "statementType": "variableDeclaration",
+            "variableName": {
                 "type": "value",
                 "valueType": "literal",
-                "value": "a",
-                "dataType": "f64"
+                "value": "a"
+            },
+            "variableType": null,
+            "variableScopeDefinition": null,
+            "value": {
+                "type": "expression",
+                "value": {
+                    "type": "value",
+                    "valueType": "integer",
+                    "value": 0,
+                    "dataType": "i32"
+                }
             }
+        },
+        "condition": {
+            "type": "expression",
+            "value": {
+                "type": "binary",
+                "operator": "<",
+                "left": {
+                    "type": "value",
+                    "valueType": "literal",
+                    "value": "a",
+                    "dataType": "i32"
+                },
+                "right": {
+                    "type": "value",
+                    "valueType": "integer",
+                    "value": 5,
+                    "dataType": "i32"
+                },
+                "dataType": "bool"
+            }
+        },
+        "assignment": {
+            "type": "statement",
+            "statementType": "increment",
+            "variableName": {
+                "type": "value",
+                "valueType": "literal",
+                "value": "a"
+            }
+        },
+        "block": {
+            "type": "statement",
+            "statementType": "block",
+            "blockScopeName": {
+                "type": "blockName",
+                "blockName": {
+                    "type": "value",
+                    "valueType": "literal",
+                    "value": "9442094234200189-Anonymous"
+                }
+            },
+            "blockStatements": [],
+            "staticScope": {}
         }
     }
 ]

@@ -24,7 +24,7 @@ export class Scope {
 
     lookupDefinition(name: string, line: number): Definition | null {
         for (let definition of this.definitions)
-            if (definition.name == name && line > definition.line)
+            if (definition.name == name && line >= definition.line)
                 return definition
 
         let parentLookup = null
@@ -89,6 +89,16 @@ function generateScopeDefinitionsHelper(stmt: Statement, currentScope: Scope, li
             throw new NSReferenceError(`Attempting to re define variable '${name}'`)
 
         scope.definitions?.push(new Definition(name, type, lineInBlock))
+    } else if (stmt.statementType == "for") {
+        if (stmt.definition.statementType == "variableDeclaration") {
+            generateScopeDefinitionsHelper(stmt.definition, currentScope, lineInBlock, scopes)
+        }
+        generateScopeDefinitionsHelper(stmt.block, currentScope, lineInBlock, scopes)
+    } else if (stmt.statementType == "if") {
+        generateScopeDefinitionsHelper(stmt.ifBranch.block, currentScope, lineInBlock, scopes);
+        stmt.elseIfBranches.forEach(branch => generateScopeDefinitionsHelper(branch.block, currentScope, lineInBlock, scopes))
+        if (stmt.elseBranch?.block)
+            generateScopeDefinitionsHelper(stmt.elseBranch.block, currentScope, lineInBlock, scopes);
     } else if (stmt.statementType == "block") {
         let name = stmt.blockScopeName?.blockName.value
 

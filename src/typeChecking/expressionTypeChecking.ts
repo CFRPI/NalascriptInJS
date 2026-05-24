@@ -25,6 +25,28 @@ export function typeAnnotateAST(ast: Statement[], currentScope?: string | null, 
                 typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
                 let scopeDefault = statement.variableScopeDefinition?.scopeDefinitionDefault;
                 if (scopeDefault) typeCheckExpression(scopeDefault, lineNum, scopeName, scopes);
+                if (!statement.variableType)
+                    statement.variableType = statement.value.value.dataType
+                break
+            case "for":
+                typeCheckExpression(statement.definition.value.value, lineNum, scopeName, scopes)
+                typeCheckExpression(statement.condition.value, lineNum, scopeName, scopes)
+                // easy way to handle whatever kind of statement this is
+                typeAnnotateAST([statement.assignment], currentScope, scopes)
+                typeAnnotateAST([statement.block], currentScope, scopes)
+                break
+            case "if":
+                typeCheckExpression(statement.ifBranch.condition.value, lineNum, scopeName, scopes)
+                typeAnnotateAST([statement.ifBranch.block], currentScope, scopes)
+
+                for (const ifelse of statement.elseIfBranches) {
+                    typeCheckExpression(ifelse.condition.value, lineNum, scopeName, scopes)
+                    typeAnnotateAST([ifelse.block], currentScope, scopes)
+                }
+                if (statement.elseBranch) {
+                    typeAnnotateAST([statement.elseBranch.block], currentScope, scopes)
+                }
+                
                 break
             case "expression":
                 typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)

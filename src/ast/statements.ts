@@ -85,6 +85,36 @@ export interface BlockStatement {
     staticScope?: StaticScopeTypes
 }
 
+export interface ForStatement {
+    type: "statement"
+    statementType: "for"
+    definition: AssignmentStatement | VariableDeclarationStatement
+    condition: Expression
+    assignment: AssignmentStatements
+    block: BlockStatement
+}
+
+export interface IfStatement {
+    type: "statement"
+    statementType: "if"
+    ifBranch: BranchWithCondition
+    elseIfBranches: BranchWithCondition[]
+    elseBranch: BranchWithoutCondition | null
+}
+
+export interface BranchWithCondition {
+    type: "statement"
+    statementType: "branchWithCondition"
+    condition: Expression
+    block: BlockStatement
+}
+
+export interface BranchWithoutCondition {
+type: "statement"
+    statementType: "branchWithoutCondition"
+    block: BlockStatement
+}
+
 export type StaticScopeTypes = {[key: string]: {
         varType: VarType,
         line: number
@@ -95,6 +125,19 @@ export interface BlockName {
     type: "blockName"
     blockName: LiteralValue
 }
+
+export type AssignmentWithValueStatements = 
+    | AssignmentStatement
+    | AdditionAssignmentStatement
+    | SubtractionAssignmentStatement
+    | MultiplicationAssignmentStatement
+    | DivisionAssignmentStatement
+    | ModuloAssignmentStatement
+
+export type AssignmentStatements = 
+    | AssignmentWithValueStatements
+    | IncrementStatement
+    | DecrementStatement
 
 export type Statement =
     | AssignmentStatement
@@ -108,3 +151,5 @@ export type Statement =
     | VariableDeclarationStatement
     | ExpressionStatement
     | BlockStatement
+    | ForStatement
+    | IfStatement

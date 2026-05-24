@@ -1,5 +1,5 @@
 import { Expression, ExpressionNode } from "../ast/expression";
-import { Statement } from "../ast/statements";
+import { AssignmentWithValueStatements, Statement } from "../ast/statements";
 import { NSReferenceError, Scope } from "./statementTypeChecking";
 
 export function assertVariablesExistWhenUsed(ast: Statement[], scopes: Map<string, Scope>) {
@@ -29,20 +29,48 @@ function assertVariableExistWhenUsedHelper(stmt: Statement, lineInBlock: number,
                 referenceError(name);
             break;
         case "expression":
-            const literalsAccessed = getAllLiteralsInExpression(stmt.value)
-            for (let literal of literalsAccessed) {
-                if (!scope.lookupDefinition(literal, lineInBlock))
-                    referenceError(literal)
+            validateExpression(stmt.value, scope, lineInBlock);
+            break
+        case "for":
+            validateExpression(stmt.condition, scope, lineInBlock);
+            
+            // if we are assigning a variable, chck it exists
+            if (stmt.definition.statementType == "assignment") 
+                validateExpression(stmt.definition.value, scope, lineInBlock)
+            if (stmt.assignment.statementType != "increment" && stmt.assignment.statementType != "decrement") {
+                let assignment = stmt.assignment as AssignmentWithValueStatements
+                validateExpression(assignment.value, scope, lineInBlock)
+            }
+            assertVariableExistWhenUsedHelper(stmt.block, lineInBlock, scopeName, scopes)
+            break
+        case "if":
+            assertVariableExistWhenUsedHelper(stmt.ifBranch.block, lineInBlock, scopeName, scopes)
+            validateExpression(stmt.ifBranch.condition, scope, lineInBlock)
+            stmt.elseIfBranches.forEach(branch => {
+                assertVariableExistWhenUsedHelper(branch.block, lineInBlock, scopeName, scopes)
+                validateExpression(branch.condition, scope, lineInBlock)
+            })
+
+            if (stmt.elseBranch) {
+                assertVariableExistWhenUsedHelper(stmt.elseBranch.block, lineInBlock, scopeName, scopes)
             }
             break
         case "block":
-            let scopeName = stmt.blockScopeName.blockName.value;
+            let newScopeName = stmt.blockScopeName.blockName.value;
             stmt.blockStatements.forEach((subStmt, index) => {
-                assertVariableExistWhenUsedHelper(subStmt, index, scopeName, scopes)
+                assertVariableExistWhenUsedHelper(subStmt, index, newScopeName, scopes)
             })
             break
         default:
             break;
+    }
+}
+
+function validateExpression(expr: Expression, scope: Scope, lineInBlock: number) {
+    const literalsAccessed = getAllLiteralsInExpression(expr)
+    for (let literal of literalsAccessed) {
+        if (!scope.lookupDefinition(literal, lineInBlock))
+            referenceError(literal)
     }
 }
 

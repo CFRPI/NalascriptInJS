@@ -1,10 +1,10 @@
 start = line*
 
-line = statement: statement __* newline? {
+line = __* statement: statement __* newline? {
     return statement
 }
 
-statement = variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
+statement = forStmt / ifStmt / variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
 
 blockStmt = _ scopeName: blockScopeName? _ '{' _ statements: line*  _ '}' {
     return {
@@ -128,6 +128,83 @@ scopingDefinition = "@" _ scopeName: literal "{" value: constValue? "}" {
     }
 }
 
+forStmt = forWithDeclaration / forWithAssignment
+
+ifStmt = "if" _ ifCondition: expression _ ifBlock: blockStmt _ elseIf: elseIfStmt* _ elseStmt: elseStmt? {
+    return {
+        type: "statement",
+        statementType: "if",
+        ifBranch: {
+            type: "statement",
+            statementType: "branchWithCondition",
+            condition: ifCondition,
+            block: ifBlock,
+        }, 
+        elseIfBranches: elseIf,
+        elseBranch: elseStmt
+    }
+}
+
+elseIfStmt = "else" _ "if" _ condition: expression _ block: blockStmt _ {
+    return {
+        type: "statement",
+        statementType: "branchWithCondition",
+        condition: condition,
+        block: block
+    }
+}
+
+elseStmt = "else" _ block: blockStmt {
+    return {
+        type: "statement",
+        statementType: "branchWithoutCondition",
+        block: block
+    }
+}
+
+forWithDeclaration = "for" _ declaration: variableDeclarationStmt _ ";" _ condition: expression _ ";" _ assignment: assignmentStatements _ block: blockStmt {
+    return {
+        type: "statement",
+        statementType: "for",
+        definition: declaration,
+        condition: condition,
+        assignment: assignment,
+        block: block
+    }
+}
+
+forWithAssignment = "for" _ declaration: assignmentStatements _ ";" _ condition: expression _ ";" _ assignment: assignmentStatements _ block: blockStmt {
+    return {
+        type: "statement",
+        statementType: "for",
+        definition: declaration,
+        condition: condition,
+        assignment: assignment,
+        block: block
+    }
+}
+
+// Simplified for-loop specific rules
+forVarDeclaration = "let" _ name: literal _ type: typeDefinition? _ "=" _ value: expression {
+    return {
+        type: "statement",
+        statementType: "variableDeclaration",
+        variableName: name,
+        variableType: type,
+        variableScopeDefinition: null,
+        value: value
+    }
+}
+
+forAssignment = variable: literal _ "=" _ value: expression {
+    return {
+        type: "statement",
+        statementType: "assignment",
+        variableName: variable,
+        value: value
+    }
+}
+
 typeDefinition = ":" _ type: varType {
     return type
 }
@@ -152,7 +229,7 @@ expression = value: logical {
     }
 }
 
-logical = _ left: comparison _ operator: ('&&' / '||') _ right: logical _ {
+logical = left: comparison _ operator: ('&&' / '||') _ right: logical {
     return {
         type: "binary",
         operator: operator,
@@ -161,7 +238,7 @@ logical = _ left: comparison _ operator: ('&&' / '||') _ right: logical _ {
     }
 } / comparison
 
-comparison = _ left: term _ operator: ('==' / '!=' / '<=' / '>=' / '>' / '<' ) _ right: comparison _ {
+comparison = left: term _ operator: ('==' / '!=' / '<=' / '>=' / '>' / '<' ) _ right: comparison {
     return {
         type: "binary",
         operator: operator,
@@ -170,7 +247,7 @@ comparison = _ left: term _ operator: ('==' / '!=' / '<=' / '>=' / '>' / '<' ) _
     }
 } / term
 
-term = _ left: factor _ operator: ("+" / "-") _  right: term _ {
+term = left: factor _ operator: ("+" / "-") _  right: term {
     return {
         type: "binary",
         operator: operator,
@@ -179,7 +256,7 @@ term = _ left: factor _ operator: ("+" / "-") _  right: term _ {
     }
 } / factor
 
-factor = _ left: modulus _ operator: ("*" / "/") _  right: factor _ {
+factor = left: modulus _ operator: ("*" / "/") _  right: factor {
     return {
         type: "binary",
         operator: operator,
@@ -188,7 +265,7 @@ factor = _ left: modulus _ operator: ("*" / "/") _  right: factor _ {
     }
 } / modulus
 
-modulus = _ left: typeCast _ operator: ("%") _  right: modulus _ {
+modulus = left: typeCast _ operator: ("%") _  right: modulus {
     return {
         type: "binary",
         operator: operator,
@@ -205,7 +282,7 @@ typeCast = value: unary _ "as" _ type: varType {
     }
 } / unary
 
-unary = _ operator: ("!" / "-") _ value: unary _ {
+unary = operator: ("!" / "-") _ value: unary {
     return {
         type: "unary",
         operator: operator,
@@ -215,7 +292,7 @@ unary = _ operator: ("!" / "-") _ value: unary _ {
 
 
 value = constValue / literal / grouping
-constValue = _ operator: ("!" / "-") _ value: constValue _ {
+constValue = operator: ("!" / "-") _ value: constValue {
     return {
         type: "unary",
         operator: operator,
@@ -224,7 +301,7 @@ constValue = _ operator: ("!" / "-") _ value: constValue _ {
 } / constantLiteral
 constantLiteral = boolean / string / number / null
 
-grouping =  _ '(' _ content: logical _ ')' _  {
+grouping =  '(' _ content: logical _ ')'  {
     return content
 }
 

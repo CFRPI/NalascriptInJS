@@ -25,6 +25,9 @@ export function handleBinary(
 
     const arithmeticOperators: BinaryOperator[] = ["+", "-", "*", "/", "%"];
 
+    if (leftType == "null" || rightType == "null")
+        return "null"
+
     if (arithmeticOperators.includes(operator)) {
         if (isUnigned(leftType) && isUnigned(rightType)) {
             return unsignedForBitSize(maxBitSize(leftType, rightType));
@@ -93,6 +96,9 @@ export function handleBinary(
 }
 
 export function handleUnary(type: VarType, operator: UnaryOperator): VarType {
+    if (type == "null")
+        return "null"
+
     if (operator == "-" && isNumeric(type)) {
         if (isUnigned(type)) {
             throw new NSTypeError(`Cannot negate type '${type}'`)
