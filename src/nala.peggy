@@ -4,7 +4,7 @@ line = __* statement: statement __* newline? {
     return statement
 }
 
-statement = forStmt / ifStmt / variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
+statement = forStmt / ifStmt / printStmt / variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
 
 blockStmt = _ scopeName: blockScopeName? _ '{' _ statements: line*  _ '}' {
     return {
@@ -205,6 +205,14 @@ forAssignment = variable: literal _ "=" _ value: expression {
     }
 }
 
+printStmt = "print" _ value: expression {
+    return {
+        type: "statement",
+        statementType: "print",
+        value: value
+    }
+}
+
 typeDefinition = ":" _ type: varType {
     return type
 }
@@ -319,12 +327,12 @@ integer = value: [0-9]+ {
     return {
         type: "value",
         valueType: "integer",
-        value: parseInt(value)
+        value: parseInt(value.join(""))
     }
 }
 
 float = integerPortion: [0-9]+ decimalPortion: decimal {
-    let valueStr = integerPortion
+    let valueStr = integerPortion.join("")
     if (decimalPortion) {
         valueStr += decimalPortion
     }

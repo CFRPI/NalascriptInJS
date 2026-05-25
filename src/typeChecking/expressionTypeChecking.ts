@@ -21,6 +21,17 @@ export function typeAnnotateAST(ast: Statement[], currentScope?: string | null, 
             case "assignment":
                 typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
                 break
+            case "increment":
+            case "decrement":
+                let scope = scopes?.get(scopeName ?? "")
+                let name = statement.variableName.value
+                if (scope) {
+                    statement.variableType = scope.lookupDefinition(name, lineNum)?.type
+                }
+                break
+            case "print":
+                typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
+                break
             case "variableDeclaration":
                 typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
                 let scopeDefault = statement.variableScopeDefinition?.scopeDefinitionDefault;

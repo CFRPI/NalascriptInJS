@@ -54,12 +54,14 @@ export interface IncrementStatement {
     type: "statement"
     statementType: "increment"
     variableName: LiteralValue
+    variableType?: VarType
 }
 
 export interface DecrementStatement {
     type: "statement"
     statementType: "decrement"
     variableName: LiteralValue
+    variableType?: VarType
 }
 
 export interface VariableDeclarationStatement {
@@ -68,6 +70,12 @@ export interface VariableDeclarationStatement {
     variableName: LiteralValue
     variableType?: VarType
     variableScopeDefinition?: ScopingDefinition
+    value: Expression
+}
+
+export interface PrintStatement {
+    type: "statement"
+    statementType: "print"
     value: Expression
 }
 
@@ -153,3 +161,4 @@ export type Statement =
     | BlockStatement
     | ForStatement
     | IfStatement
+    | PrintStatement

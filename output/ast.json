@@ -1,69 +1,26 @@
 [
     {
         "type": "statement",
-        "statementType": "for",
-        "definition": {
-            "type": "statement",
-            "statementType": "variableDeclaration",
-            "variableName": {
-                "type": "value",
-                "valueType": "literal",
-                "value": "a"
-            },
-            "variableType": null,
-            "variableScopeDefinition": null,
-            "value": {
-                "type": "expression",
-                "value": {
-                    "type": "value",
-                    "valueType": "integer",
-                    "value": 0,
-                    "dataType": "i32"
-                }
-            }
-        },
-        "condition": {
+        "statementType": "expression",
+        "value": {
             "type": "expression",
             "value": {
                 "type": "binary",
                 "operator": "<",
                 "left": {
                     "type": "value",
-                    "valueType": "literal",
-                    "value": "a",
+                    "valueType": "integer",
+                    "value": 21,
                     "dataType": "i32"
                 },
                 "right": {
                     "type": "value",
-                    "valueType": "integer",
-                    "value": 5,
-                    "dataType": "i32"
+                    "valueType": "float",
+                    "value": 20.21,
+                    "dataType": "f32"
                 },
                 "dataType": "bool"
             }
-        },
-        "assignment": {
-            "type": "statement",
-            "statementType": "increment",
-            "variableName": {
-                "type": "value",
-                "valueType": "literal",
-                "value": "a"
-            }
-        },
-        "block": {
-            "type": "statement",
-            "statementType": "block",
-            "blockScopeName": {
-                "type": "blockName",
-                "blockName": {
-                    "type": "value",
-                    "valueType": "literal",
-                    "value": "9442094234200189-Anonymous"
-                }
-            },
-            "blockStatements": [],
-            "staticScope": {}
         }
     }
 ]
