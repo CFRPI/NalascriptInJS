@@ -2,7 +2,7 @@ import { BlockStatement, Statement, StaticScopeTypes, VariableDeclarationStateme
 import { Definition, DefinitionType, FunctionDefinition, VariableDefinition } from "./defintion";
 import { FunctionCallValue, Value, VarType } from "../ast/expression";
 import { Declaration, FunctionDeclaration } from "../ast/declaration";
-import { NSTypeError } from "./expressionTypeHandling";
+import { createRawType, isNull, isVoid, NSTypeError } from "./expressionTypeHandling";
 
 export class NSReferenceError extends Error {
     constructor(message: string) {
@@ -107,7 +107,7 @@ function generateScopeDefinitionsForStatement(stmt: Statement, currentScope: Sco
 
         const definition = new VariableDefinition(name, lineInBlock, type, currentScope, lineInBlock)
        
-        if (type == "null") {
+        if (isNull(type)) {
             let valueType = stmt.value.value.type 
             if (valueType == "value") {
                 const value = stmt.value.value as Value
@@ -179,7 +179,7 @@ function getStaticScope(scope: Scope | undefined): StaticScopeTypes {
 }
 
 function getVariableType(stmt: VariableDeclarationStatement, scope: Scope, lineNo: number): VarType {
-    let type = stmt.variableType ?? "null"
+    let type = stmt.variableType ?? createRawType("null")
 
     if (!stmt.variableType) {
         let returnType = stmt.value.value.dataType ?? "null"
@@ -188,7 +188,7 @@ function getVariableType(stmt: VariableDeclarationStatement, scope: Scope, lineN
         type = returnType as VarType
     }
 
-    if (type == "null") {
+    if (isNull(type)) {
         let valueType = stmt.value.value.type 
         if (valueType == "value") {
             const value = stmt.value.value as Value
@@ -198,7 +198,7 @@ function getVariableType(stmt: VariableDeclarationStatement, scope: Scope, lineN
 
                 if (funcCall && funcCall.definitionType == "function") {
                     let returnType = (funcCall as FunctionDefinition).returnType
-                    if (returnType == "void") {
+                    if (isVoid(returnType)) {
                         throw new NSTypeError("Cannot use type 'void' as a value")
                     }
                     type = returnType as VarType

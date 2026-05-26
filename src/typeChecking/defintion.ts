@@ -1,6 +1,7 @@
 import { VarType } from "../ast/expression"
 import { NSReturnType, Parameter } from "../ast/declaration"
 import { NSReferenceError, Scope } from "./statementTypeChecking"
+import { createFunctionType } from "./expressionTypeHandling"
 
 export enum DefinitionType {
     variable="variable", function="function"
@@ -42,7 +43,6 @@ export class VariableDefinition extends Definition {
         if (!this.reference)
             return
 
-        console.log(this.reference)
 
         const reference = this.scope.lookupDefinition(this.reference, this.lineInBlock)
         if (!reference)
@@ -51,6 +51,8 @@ export class VariableDefinition extends Definition {
         if (reference.definitionType == "variable") {
             reference.applyReference()
             this.type = (reference as VariableDefinition).type
+        } else if (reference.definitionType == "function") {
+            this.type = createFunctionType(reference.name)
         }
     }
 }

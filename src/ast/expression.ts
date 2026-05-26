@@ -1,6 +1,6 @@
 import { NSReturnType } from "./declaration"
 
-export type VarType =
+export type RawVarTypes =
     | "u8"
     | "u16"
     | "u32"
@@ -19,6 +19,22 @@ export type VarType =
     | "str"
     | "bool"
     | "null"
+
+export enum VariableClass {
+    Raw = "Raw", Function = "Function"
+}
+
+export interface RawVarType {
+    varClass: VariableClass.Raw
+    type: RawVarTypes
+}
+
+export interface FunctionVarType {
+    varClass: VariableClass.Function,
+    name: string
+}
+
+export type VarType = RawVarType | FunctionVarType
 
 export type BinaryOperator =
     | "+"

@@ -260,10 +260,15 @@ typeDefinition = ":" _ type: varType {
     return type
 }
 
-varType = "u8" / "u16" / "u32" / "u64" / "u128" / 
+varType = type: ("u8" / "u16" / "u32" / "u64" / "u128" / 
         "i8" / "i16" / "i32" / "i64" / "i128" /
         "f8" / "f16" / "f32" / "f64" / "f128" /
-        "str" / "bool" / "null"
+        "str" / "bool" / "null") {
+    return {
+        varClass: "Raw",
+        type: type,
+    }
+}
 
 stmtExpr = expr: expression {
     return {
@@ -356,7 +361,7 @@ grouping =  '(' _ content: logical _ ')'  {
     return content
 }
 
-functionCall = name: literal _ "(" firstArgument: expression argumentList: functionArgumentInList* ")" {
+functionCall = name: literal _ "(" firstArgument: expression? argumentList: functionArgumentInList* ")" {
     let args = []
     if (firstArgument)
         args.push(firstArgument)

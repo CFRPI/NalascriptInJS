@@ -1,9 +1,9 @@
-import { Declaration, FunctionDeclaration, NSReturnType } from "../ast/declaration";
-import { ExpressionNode, Value, VarType } from "../ast/expression";
+import { Declaration, NSReturnType } from "../ast/declaration";
+import { ExpressionNode, RawVarType, Value, VariableClass, VarType } from "../ast/expression";
 import { Statement } from "../ast/statements";
 import { DefinitionType, FunctionDefinition, VariableDefinition } from "./defintion";
 import { validateTypeCast } from "./expressionTypeCasting";
-import { handleBinary, handleUnary, NSTypeError } from "./expressionTypeHandling";
+import { createRawType, handleBinary, handleUnary, isVoid, NSTypeError } from "./expressionTypeHandling";
 import { Scope } from "./statementTypeChecking";
 
 export function typeAnnotateAST(ast: Declaration[], currentScope?: string | null, scopes?: Map<string, Scope>) {
@@ -59,10 +59,10 @@ function typeAnnotateStatement(statement: Statement, lineNum: number, scopeName:
                 typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
                 let scopeDefault = statement.variableScopeDefinition?.scopeDefinitionDefault;
                 if (scopeDefault) typeCheckExpression(scopeDefault, lineNum, scopeName, scopes);
-                const valueType = statement.value.value.dataType;
+                const valueType = statement.value.value.dataType as RawVarType;
                 
                 const varName = statement.variableName.value
-                if (valueType == "void")
+                if (isVoid(valueType))
                     throw new NSTypeError(`Cannot assign type 'void' to variable (variable ${varName})`)
 
                 if (!statement.variableType)
@@ -100,14 +100,14 @@ export function typeCheckExpression(expr: ExpressionNode, lineNum: number, curre
         case "binary":
             typeCheckExpression(expr.left, lineNum, currentScope, scopes);
             typeCheckExpression(expr.right, lineNum, currentScope, scopes);
-            let leftType = expr.left.dataType ?? "null";
-            let rightType = expr.right.dataType ?? "null";
+            let leftType = expr.left.dataType ?? createRawType("null");
+            let rightType = expr.right.dataType ?? createRawType("null");
             let binaryOperator = expr.operator;
             expr.dataType = handleBinary(leftType, rightType, binaryOperator);
             break;
         case "unary":
             typeCheckExpression(expr.value, lineNum, currentScope, scopes);
-            let type = expr.value.dataType ?? "null";
+            let type = expr.value.dataType ?? createRawType("null");
             let unaaryOperator = expr.operator;
             expr.dataType = handleUnary(type, unaaryOperator);
             break;
@@ -116,7 +116,7 @@ export function typeCheckExpression(expr: ExpressionNode, lineNum: number, curre
             break;
         case "cast":
             typeCheckExpression(expr.value, lineNum, currentScope, scopes);
-            let preCastType = expr.value.dataType ?? "null";
+            let preCastType = expr.value.dataType ?? createRawType("null");
             let postCastType = expr.castType;
             validateTypeCast(preCastType, postCastType);
             expr.dataType = postCastType;
@@ -133,30 +133,54 @@ function getValueDataType(value: Value, lineNum: number, currentScopeName?: stri
 
     switch (value.valueType) {
         case "boolean":
-            return "bool";
+            return {
+                varClass: VariableClass.Raw,
+                type: "bool"
+            };
         case "string":
-            return "str";
+            return {
+                varClass: VariableClass.Raw,
+                type: "str"
+            };
         case "float":
-            return "f32";
+            return {
+                varClass: VariableClass.Raw,
+                type: "f32"
+            };
         case "integer":
-            return "i32";
+            return {
+                varClass: VariableClass.Raw,
+                type: "i32"
+            };
         case "functionCall":
             let funcName = value.name.value
             const potentialFuncDefinition = scope?.lookupDefinition(funcName, lineNum)
             if (potentialFuncDefinition?.definitionType != DefinitionType.function)
-                return "null"
+                return {
+                varClass: VariableClass.Raw,
+                type: "null"
+            }
             const func = potentialFuncDefinition as FunctionDefinition
             return func.returnType
         case "literal":
             let name = value.value
             let definition = scope?.lookupDefinition(name, lineNum)
             if (definition?.definitionType != DefinitionType.variable)
-                return "null"
+                return {
+                    varClass: VariableClass.Raw,
+                    type: "null"
+                }
             const variable = definition as VariableDefinition
-            return variable?.type ?? "null"
+            return variable?.type ?? {
+                varClass: VariableClass.Raw,
+                type: "null"
+            }
         default:
             break;
     }
 
-    return "null";
+    return {
+    varClass: VariableClass.Raw,
+    type: "null"
+};
 }

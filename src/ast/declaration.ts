@@ -1,4 +1,4 @@
-import { LiteralValue, VarType } from "./expression"
+import { LiteralValue, VariableClass, VarType } from "./expression"
 import { BlockStatement, Statement } from "./statements"
 
 export type Declaration = StatementDeclaration | FunctionDeclaration
@@ -18,7 +18,10 @@ export interface FunctionDeclaration {
     body: BlockStatement
 }
 
-export type NSReturnType = VarType | "void"
+export type NSReturnType = VarType | {
+    varClass: VariableClass.Raw
+    type: "void"
+}
 
 export interface Parameter {
     type: "declaration"
