@@ -105,6 +105,8 @@ function getAllLiteralsInExpressionHelper(node: ExpressionNode, literals: Set<st
         case "value":
             if (node.valueType == "literal")
                 literals.add(node.value)
+            else if (node.valueType == "functionCall")
+                literals.add(node.name.value)
         default:
             break
     }
