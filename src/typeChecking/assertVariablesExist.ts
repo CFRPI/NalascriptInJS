@@ -1,15 +1,25 @@
+import { Declaration } from "../ast/declaration";
 import { Expression, ExpressionNode } from "../ast/expression";
 import { AssignmentWithValueStatements, Statement } from "../ast/statements";
 import { NSReferenceError, Scope } from "./statementTypeChecking";
 
-export function assertVariablesExistWhenUsed(ast: Statement[], scopes: Map<string, Scope>) {
+export function assertVariablesExistWhenUsed(ast: Declaration[], scopes: Map<string, Scope>) {
     const scopeName = "global"
-    ast.forEach((stmt, index)  => {
-        assertVariableExistWhenUsedHelper(stmt, index, scopeName, scopes)
+    ast.forEach((decl, index)  => {
+        assertVariableExistWhenUsedHelper(decl, index, scopeName, scopes)
     })
 }
 
-function assertVariableExistWhenUsedHelper(stmt: Statement, lineInBlock: number, scopeName: string, scopes: Map<string, Scope>) {
+function assertVariableExistWhenUsedHelper(declaration: Declaration, lineInBlock: number, scopeName: string, scopes: Map<string, Scope>) {
+    switch (declaration.declarationType) {
+        case "statement":
+            assertVariableExistWhenUsedStmt(declaration.value, lineInBlock, scopeName, scopes)
+        case "function":
+            break
+    }
+}
+
+function assertVariableExistWhenUsedStmt(stmt: Statement, lineInBlock: number, scopeName: string, scopes: Map<string, Scope>) {
     const scope = scopes.get(scopeName)
     if (!scope) {
         throw new Error("Internal Error asseertVariableExistWhenUsedHelper accessed nonexistent scope")
@@ -41,24 +51,24 @@ function assertVariableExistWhenUsedHelper(stmt: Statement, lineInBlock: number,
                 let assignment = stmt.assignment as AssignmentWithValueStatements
                 validateExpression(assignment.value, scope, lineInBlock)
             }
-            assertVariableExistWhenUsedHelper(stmt.block, lineInBlock, scopeName, scopes)
+            assertVariableExistWhenUsedStmt(stmt.block, lineInBlock, scopeName, scopes)
             break
         case "if":
-            assertVariableExistWhenUsedHelper(stmt.ifBranch.block, lineInBlock, scopeName, scopes)
+            assertVariableExistWhenUsedStmt(stmt.ifBranch.block, lineInBlock, scopeName, scopes)
             validateExpression(stmt.ifBranch.condition, scope, lineInBlock)
             stmt.elseIfBranches.forEach(branch => {
-                assertVariableExistWhenUsedHelper(branch.block, lineInBlock, scopeName, scopes)
+                assertVariableExistWhenUsedStmt(branch.block, lineInBlock, scopeName, scopes)
                 validateExpression(branch.condition, scope, lineInBlock)
             })
 
             if (stmt.elseBranch) {
-                assertVariableExistWhenUsedHelper(stmt.elseBranch.block, lineInBlock, scopeName, scopes)
+                assertVariableExistWhenUsedStmt(stmt.elseBranch.block, lineInBlock, scopeName, scopes)
             }
             break
         case "block":
             let newScopeName = stmt.blockScopeName.blockName.value;
-            stmt.blockStatements.forEach((subStmt, index) => {
-                assertVariableExistWhenUsedHelper(subStmt, index, newScopeName, scopes)
+            stmt.blockDeclarations.forEach((subDecl, index) => {
+                assertVariableExistWhenUsedHelper(subDecl, index, newScopeName, scopes)
             })
             break
         default:

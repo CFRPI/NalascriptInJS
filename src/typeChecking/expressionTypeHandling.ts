@@ -1,3 +1,4 @@
+import { NSReturnType } from "../ast/declaration";
 import { BinaryOperator, UnaryOperator, VarType } from "../ast/expression";
 
 export class NSTypeError extends Error {
@@ -8,10 +9,13 @@ export class NSTypeError extends Error {
 }
 
 export function handleBinary(
-    leftType: VarType,
-    rightType: VarType,
+    leftType: NSReturnType,
+    rightType: NSReturnType,
     operator: BinaryOperator,
-): VarType {
+): NSReturnType {
+    if (isVoid(leftType) || isVoid(rightType))
+        throw new NSTypeError(`Cannot use operator '${operator}' on type void`)
+
     const logicalOperators: BinaryOperator[] = ["&&", "||"];
 
     const comparisonOperators: BinaryOperator[] = [
@@ -95,7 +99,10 @@ export function handleBinary(
     return "null"
 }
 
-export function handleUnary(type: VarType, operator: UnaryOperator): VarType {
+export function handleUnary(type: NSReturnType, operator: UnaryOperator): NSReturnType {
+    if (type == "void")
+        throw new NSTypeError(`Cannot use operator '${operator}' on type void`)
+
     if (type == "null")
         return "null"
 
@@ -112,47 +119,51 @@ export function handleUnary(type: VarType, operator: UnaryOperator): VarType {
     throw new NSTypeError(`Cannot use operator '${operator} with type '${type}''`);
 }
 
-export function isNumeric(type: VarType): boolean {
+export function isVoid(type: NSReturnType) {
+    return type == "void"
+}
+
+export function isNumeric(type: NSReturnType): boolean {
     return isUnigned(type) || isSigned(type) || isFloat(type);
 }
 
-export function isUnigned(type: VarType): boolean {
+export function isUnigned(type: NSReturnType): boolean {
     return type.charAt(0) == "u";
 }
 
-export function isSigned(type: VarType): boolean {
+export function isSigned(type: NSReturnType): boolean {
     return type.charAt(0) == "i";
 }
 
-export function isFloat(type: VarType): boolean {
+export function isFloat(type: NSReturnType): boolean {
     return type.charAt(0) == "f";
 }
 
-export function isString(type: VarType): boolean {
+export function isString(type: NSReturnType): boolean {
     return type == "str";
 }
 
-export function isBoolean(type: VarType): boolean {
+export function isBoolean(type: NSReturnType): boolean {
     return type == "bool";
 }
 
-export function bitSizeForType(type: VarType) {
+export function bitSizeForType(type: NSReturnType) {
     let sizeString = type.substring(1);
     return parseInt(sizeString);
 }
 
-export function maxBitSize(leftType: VarType, rightType: VarType): number {
+export function maxBitSize(leftType: NSReturnType, rightType: NSReturnType): number {
     return Math.max(bitSizeForType(leftType), bitSizeForType(rightType));
 }
 
-export function unsignedForBitSize(size: number): VarType {
-    return ("u" + size) as VarType;
+export function unsignedForBitSize(size: number): NSReturnType {
+    return ("u" + size) as NSReturnType;
 }
 
-export function signedForBitSize(size: number): VarType {
-    return ("i" + size) as VarType;
+export function signedForBitSize(size: number): NSReturnType {
+    return ("i" + size) as NSReturnType;
 }
 
-export function floatForBitSize(size: number): VarType {
-    return ("f" + size) as VarType;
+export function floatForBitSize(size: number): NSReturnType {
+    return ("f" + size) as NSReturnType;
 }

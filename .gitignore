@@ -1,3 +1,4 @@
 node_modules
-src/output
+output
 bun.lockb
+output/ast.json

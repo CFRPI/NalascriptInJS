@@ -1,12 +1,55 @@
 start = line*
 
-line = __* statement: statement __* newline? {
-    return statement
+line = __* declaration: declaration __* newline? {
+    return declaration
+}
+
+declaration = functionDeclaration / declarationStmt
+
+declarationStmt = stmt: statement {
+    return {
+        type: "declaration",
+        declarationType: "statement",
+        value: stmt
+    }
+}
+
+functionDeclaration = "fn" _ name: literal _ "(" firstParameter: functionParameter? _ parameterList: functionParameterInList* ")" _ returnType: functionReturnType? _ body: blockStmt {
+    const parameters = []
+    if (firstParameter)
+        parameters.push(firstParameter)
+    parameters.push(...parameterList)
+
+    return {
+        type: "declaration",
+        declarationType: "function",
+        name: name,
+        parameters: parameters,
+        returnType: returnType ?? "null",
+        body: body,
+    }
+}
+
+functionReturnType = ":" _ type: varType {
+    return type
+}
+
+functionParameterInList = _ "," _ parameter: functionParameter {
+    return parameter
+}
+
+functionParameter = name: literal _ ":" _ type: varType "" {
+    return {
+        type: "declaration",
+        declarationType: "parameter",
+        name: name,
+        dataType: type
+    }
 }
 
 statement = forStmt / ifStmt / printStmt / variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
 
-blockStmt = _ scopeName: blockScopeName? _ '{' _ statements: line*  _ '}' {
+blockStmt = _ scopeName: blockScopeName? _ '{' _ declarations: line*  _ '}' {
     return {
         type: "statement",
         statementType: "block",
@@ -18,7 +61,7 @@ blockStmt = _ scopeName: blockScopeName? _ '{' _ statements: line*  _ '}' {
                 value: Math.random().toString().substring(2) + "-Anonymous"
             }
         },
-        blockStatements: statements,
+        blockDeclarations: declarations,
     }
 }
 
@@ -299,7 +342,7 @@ unary = operator: ("!" / "-") _ value: unary {
 } / value
 
 
-value = constValue / literal / grouping
+value = constValue / functionCall / literal / grouping
 constValue = operator: ("!" / "-") _ value: constValue {
     return {
         type: "unary",
@@ -311,6 +354,24 @@ constantLiteral = boolean / string / number / null
 
 grouping =  '(' _ content: logical _ ')'  {
     return content
+}
+
+functionCall = name: literal _ "(" firstArgument: expression argumentList: functionArgumentInList* ")" {
+    let args = []
+    if (firstArgument)
+        args.push(firstArgument)
+    args.push(...argumentList)
+
+    return {
+        type: "value",
+        valueType: "functionCall",
+        name: name,
+        arguments: args
+    }
+}
+
+functionArgumentInList = value: expression "," {
+    return value
 }
 
 literal = first: [a-zA-Z$] rest:[a-zA-Z0-9$]* {

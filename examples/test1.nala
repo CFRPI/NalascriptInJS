@@ -1,1 +1,10 @@
-21 < 20.21
+{
+    let a = 5
+    fn sayHi(name: str): str {
+        print "Hello " + name
+    }
+
+    let x = sayHi("Connor")
+    let y = x
+    let z = sayHi
+}

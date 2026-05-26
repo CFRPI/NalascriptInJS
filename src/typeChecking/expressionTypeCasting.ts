@@ -1,7 +1,10 @@
-import { VarType } from "../ast/expression";
-import { bitSizeForType, isBoolean, isFloat, isNumeric, isString, NSTypeError } from "./expressionTypeHandling";
+import { NSReturnType } from "../ast/declaration";
+import { bitSizeForType, isBoolean, isFloat, isNumeric, isString, isVoid, NSTypeError } from "./expressionTypeHandling";
 
-export function validateTypeCast(preCastType: VarType, postCastType: VarType) {
+export function validateTypeCast(preCastType: NSReturnType, postCastType: NSReturnType) {
+    if (isVoid(preCastType) && !isVoid(postCastType)) 
+        throw new NSTypeError(`Cannot cast type 'void' to type ${postCastType}`)
+    
     if (isNumeric(preCastType) && !isNumeric(postCastType))
         throw new NSTypeError(`Cannot cast '${preCastType}' to non numeric type '${postCastType}'`);
 

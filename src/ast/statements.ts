@@ -1,3 +1,4 @@
+import { Declaration, NSReturnType, Parameter } from "./declaration"
 import { Expression, LiteralValue, Value, VarType } from "./expression"
 
 // Scoping definition
@@ -89,7 +90,7 @@ export interface BlockStatement {
     type: "statement"
     statementType: "block"
     blockScopeName: BlockName
-    blockStatements: Statement[]
+    blockDeclarations: Declaration[]
     staticScope?: StaticScopeTypes
 }
 
@@ -123,12 +124,20 @@ type: "statement"
     block: BlockStatement
 }
 
-export type StaticScopeTypes = {[key: string]: {
-        varType: VarType,
-        line: number
-    }
+export type StaticScopeTypes = {[key: string]: StaticVariableDefinition | StaticFunctionDefinition}
+
+export type StaticVariableDefinition = {
+    definitionType: "Variable"
+    varType: VarType,
+    line: number
 }
 
+export type StaticFunctionDefinition = {
+    definitionType: "Function"
+    parameters: Parameter[]
+    returnType: NSReturnType
+    line: number
+}
 export interface BlockName {
     type: "blockName"
     blockName: LiteralValue
