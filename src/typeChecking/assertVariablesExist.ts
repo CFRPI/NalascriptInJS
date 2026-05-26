@@ -1,7 +1,8 @@
 import { Declaration } from "../ast/declaration";
 import { Expression, ExpressionNode } from "../ast/expression";
 import { AssignmentWithValueStatements, Statement } from "../ast/statements";
-import { NSReferenceError, Scope } from "./statementTypeChecking";
+import { NSReferenceError } from "./calculateDefinitionScopes";
+import { Scope } from "./types/scope";
 
 export function assertVariablesExistWhenUsed(ast: Declaration[], scopes: Map<string, Scope>) {
     const scopeName = "global"

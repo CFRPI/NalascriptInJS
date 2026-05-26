@@ -1,5 +1,5 @@
 import { NSReturnType } from "../ast/declaration";
-import { bitSizeForType, isBoolean, isFloat, isNumeric, isString, isVoid, NSTypeError } from "./expressionTypeHandling";
+import { bitSizeForType, isBoolean, isFloat, isNumeric, isString, isVoid, NSTypeError } from "./handleExpressionTypes";
 
 export function validateTypeCast(preCastType: NSReturnType, postCastType: NSReturnType) {
     if (isVoid(preCastType) && !isVoid(postCastType)) 

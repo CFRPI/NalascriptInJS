@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from "fs"
 import peggy from "peggy"
-import { NSTypeError } from "./typeChecking/expressionTypeHandling"
-import { typeAnnotateAST } from "./typeChecking/expressionTypeChecking"
-import { generateScopeDefinitions, NSReferenceError } from "./typeChecking/statementTypeChecking"
+import { NSTypeError } from "./typeChecking/handleExpressionTypes"
+import { typeAnnotateAST } from "./typeChecking/annotateExpressionTypes"
+import { calculateScopeDefinitions, NSReferenceError } from "./typeChecking/calculateDefinitionScopes"
 import { assertVariablesExistWhenUsed } from "./typeChecking/assertVariablesExist"
 import { Declaration } from "./ast/declaration"
 
@@ -14,7 +14,7 @@ try {
     const parser = peggy.generate(grammar);
     let ast = parser.parse(sourceCode) as Declaration[];
     typeAnnotateAST(ast);
-    let staticScopes = generateScopeDefinitions(ast);
+    let staticScopes = calculateScopeDefinitions(ast);
     assertVariablesExistWhenUsed(ast, staticScopes);
     // fills in variable & function call types
     writeFileSync("output/ast.json", JSON.stringify(ast, null, 4));

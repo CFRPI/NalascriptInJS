@@ -1,8 +1,9 @@
-import { BlockStatement, Statement, StaticScopeTypes, VariableDeclarationStatement } from "../ast/statements";
-import { Definition, DefinitionType, FunctionDefinition, VariableDefinition } from "./defintion";
+import { Statement, StaticScopeTypes, VariableDeclarationStatement } from "../ast/statements";
 import { FunctionCallValue, Value, VarType } from "../ast/expression";
 import { Declaration, FunctionDeclaration } from "../ast/declaration";
-import { createRawType, isNull, isVoid, NSTypeError } from "./expressionTypeHandling";
+import { createRawType, isNull, isVoid, NSTypeError } from "./handleExpressionTypes";
+import { Scope } from "./types/scope";
+import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion";
 
 export class NSReferenceError extends Error {
     constructor(message: string) {
@@ -11,36 +12,7 @@ export class NSReferenceError extends Error {
     }
 }
 
-export class Scope {
-    definitions: Definition[]
-    block: BlockStatement | null
-    parent: Scope | null
-    lineInParent: number | null
-
-    constructor(block: BlockStatement | null, parent: Scope | null, lineInParent: number | null) {
-        this.definitions = []
-        this.block = block
-        this.parent = parent
-        this.lineInParent = lineInParent
-    }
-
-    lookupDefinition(name: string, line: number): Definition | null {
-        for (let definition of this.definitions)
-            if (definition.name == name && line >= definition.line)
-                return definition
-
-        let parentLookup = null
-        if (this.parent)
-            parentLookup = this.parent.lookupDefinition(name, this.lineInParent!)
-        return parentLookup;
-    }
-
-    applyReferences() {
-        this.definitions.forEach(definition => definition.applyReference())
-    }
-}
-
-export function generateScopeDefinitions(decls: Declaration[], scopes?: Map<string, Scope>): Map<string, Scope> {
+export function calculateScopeDefinitions(decls: Declaration[], scopes?: Map<string, Scope>): Map<string, Scope> {
     scopes = scopes ?? new Map();
 
     const global = new Scope(null, null, null);
@@ -142,7 +114,7 @@ function generateScopeDefinitionsForStatement(stmt: Statement, currentScope: Sco
             scopes.set(name, childScope)
         }
 
-        generateScopeDefinitions(stmt.blockDeclarations)
+        calculateScopeDefinitions(stmt.blockDeclarations)
 
         for (let subStmtNum = 0; subStmtNum < stmt.blockDeclarations.length; subStmtNum++) {
             const subStmt = stmt.blockDeclarations[subStmtNum]
