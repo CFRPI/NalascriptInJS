@@ -1,6 +1,7 @@
 fn test(a: i32, b: f32): f32 {
+    let x = 5
     fn inner(): f32 {
-        return 1 + 1
+        return 1 + x
     }
 
     return inner() + inner()

@@ -14,6 +14,7 @@ export interface FunctionDeclaration {
     declarationType: "function"
     name: LiteralValue
     parameters: Parameter[]
+    hoisted: boolean
     returnType: NSReturnType
     body: BlockStatement
 }

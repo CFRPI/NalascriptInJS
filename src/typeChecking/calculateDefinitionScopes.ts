@@ -37,12 +37,18 @@ export function calculateScopeDefinitions(decls: Declaration[], scopes?: Map<str
 function generateScopeDefinitionsHelper(decl: Declaration, currentScope: Scope, lineInBlock: number, scopes: Map<string, Scope>) {
     switch (decl.declarationType) {
         case "function":
-            addFunctionDefinition(decl, currentScope, lineInBlock)
-            let childScope = createBlockScope(decl.body, lineInBlock, currentScope, scopes)
+            let lineToAddAt = lineInBlock
+            if (decl.hoisted) {
+                lineToAddAt = 0
+            }
+
+            addFunctionDefinition(decl, currentScope, lineToAddAt)
+
+            let childScope = createBlockScope(decl.body, lineToAddAt, currentScope, scopes)
             decl.parameters.forEach(parameter => {
                 let name = parameter.name.value
                 let type = parameter.dataType
-                if (childScope.lookupDefinition(name, lineInBlock) != null)
+                if (childScope.lookupDefinition(name, lineToAddAt) != null)
                     throw new NSReferenceError(`Attempting to re define value '${name}'`)
 
                 childScope.definitions.push(new VariableDefinition(name, 0, type, childScope))

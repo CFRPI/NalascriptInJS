@@ -14,7 +14,7 @@ declarationStmt = stmt: statement {
     }
 }
 
-functionDeclaration = "fn" _ name: literal _ "(" firstParameter: functionParameter? _ parameterList: functionParameterInList* ")" _ returnType: functionReturnType? _ body: blockStmt {
+functionDeclaration = hoisted:"$"? "fn" _ name: literal _ "(" firstParameter: functionParameter? _ parameterList: functionParameterInList* ")" _ returnType: functionReturnType? _ body: blockStmt {
     const parameters = []
     if (firstParameter)
         parameters.push(firstParameter)
@@ -25,6 +25,7 @@ functionDeclaration = "fn" _ name: literal _ "(" firstParameter: functionParamet
         declarationType: "function",
         name: name,
         parameters: parameters,
+        hoisted: hoisted != null,
         returnType: returnType ?? {
             varClass: "Raw",
             type: "void"
