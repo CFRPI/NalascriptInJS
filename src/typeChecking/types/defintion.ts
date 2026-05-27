@@ -31,13 +31,11 @@ export class Definition {
 export class VariableDefinition extends Definition {
     type: VarType
     scope: Scope
-    lineInBlock: number
 
-    constructor(name: string, line: number, type: VarType, scope: Scope, lineInBlock: number) {
+    constructor(name: string, line: number, type: VarType, scope: Scope) {
         super(name, line, DefinitionType.variable)
         this.type = type
         this.scope = scope
-        this.lineInBlock = lineInBlock
     }
 
     applyReference(): void {
@@ -45,7 +43,7 @@ export class VariableDefinition extends Definition {
             return
 
 
-        const reference = this.scope.lookupDefinition(this.reference, this.lineInBlock)
+        const reference = this.scope.lookupDefinition(this.reference, this.line)
         if (!reference)
             throw new NSReferenceError(`Referencing undefined variable ${this.reference}`)
 

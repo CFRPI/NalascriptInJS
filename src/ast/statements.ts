@@ -143,6 +143,12 @@ export interface BlockName {
     blockName: LiteralValue
 }
 
+export type ReturnStatement = {
+    type: "statement"
+    statementType: "return"
+    value: Expression | null
+}
+
 export type AssignmentWithValueStatements = 
     | AssignmentStatement
     | AdditionAssignmentStatement
@@ -171,3 +177,4 @@ export type Statement =
     | ForStatement
     | IfStatement
     | PrintStatement
+    | ReturnStatement

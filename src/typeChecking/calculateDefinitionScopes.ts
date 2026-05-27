@@ -1,4 +1,4 @@
-import { Statement, StaticScopeTypes, VariableDeclarationStatement } from "../ast/statements";
+import { BlockStatement, Statement, StaticScopeTypes, VariableDeclarationStatement } from "../ast/statements";
 import { FunctionCallValue, Value, VarType } from "../ast/expression";
 import { Declaration, FunctionDeclaration } from "../ast/declaration";
 import { createRawType, isNull, isVoid, NSTypeError } from "./handleExpressionTypes";
@@ -38,6 +38,21 @@ function generateScopeDefinitionsHelper(decl: Declaration, currentScope: Scope, 
     switch (decl.declarationType) {
         case "function":
             addFunctionDefinition(decl, currentScope, lineInBlock)
+            let childScope = createBlockScope(decl.body, lineInBlock, currentScope, scopes)
+            decl.parameters.forEach(parameter => {
+                let name = parameter.name.value
+                let type = parameter.dataType
+                if (childScope.lookupDefinition(name, lineInBlock) != null)
+                    throw new NSReferenceError(`Attempting to re define value '${name}'`)
+
+                childScope.definitions.push(new VariableDefinition(name, 0, type, childScope))
+            })
+            childScope.setReturnType(decl.returnType)
+            let childScopeName = decl.body.blockScopeName.blockName.value
+            scopes.set(childScopeName, childScope)
+            decl.body.blockDeclarations.forEach((blockDecl, line) => {
+                generateScopeDefinitionsHelper(blockDecl, childScope, line, scopes)
+            })
             break
         case "statement":
             generateScopeDefinitionsForStatement(decl.value, currentScope, lineInBlock, scopes)
@@ -77,7 +92,7 @@ function generateScopeDefinitionsForStatement(stmt: Statement, currentScope: Sco
 
         const type = getVariableType(stmt, scope, lineInBlock);
 
-        const definition = new VariableDefinition(name, lineInBlock, type, currentScope, lineInBlock)
+        const definition = new VariableDefinition(name, lineInBlock, type, currentScope)
        
         if (isNull(type)) {
             let valueType = stmt.value.value.type 
@@ -105,22 +120,28 @@ function generateScopeDefinitionsForStatement(stmt: Statement, currentScope: Sco
         if (stmt.elseBranch?.block)
             generateScopeDefinitionsForStatement(stmt.elseBranch.block, currentScope, lineInBlock, scopes);
     } else if (stmt.statementType == "block") {
-        let name = stmt.blockScopeName?.blockName.value
-
-        let childScope = scopes.get(name)
-
-        if (!childScope) {
-            childScope = new Scope(stmt, currentScope, lineInBlock)
-            scopes.set(name, childScope)
-        }
-
-        calculateScopeDefinitions(stmt.blockDeclarations)
-
-        for (let subStmtNum = 0; subStmtNum < stmt.blockDeclarations.length; subStmtNum++) {
-            const subStmt = stmt.blockDeclarations[subStmtNum]
-            generateScopeDefinitionsHelper(subStmt, childScope, subStmtNum, scopes)
-        }
+        let childScope = createBlockScope(stmt, lineInBlock, currentScope, scopes)
+        let childScopeName = stmt.blockScopeName.blockName.value
+        scopes.set(childScopeName, childScope)
+        stmt.blockDeclarations.forEach((blockDecl, line) => {
+            generateScopeDefinitionsHelper(blockDecl, childScope, line, scopes)
+        })
     }
+}
+
+function createBlockScope(stmt: BlockStatement, lineInBlock: number, currentScope: Scope, scopes: Map<string, Scope>) {
+    let name = stmt.blockScopeName?.blockName.value
+
+    let childScope = scopes.get(name)
+
+    if (!childScope) {
+        childScope = new Scope(stmt, currentScope, lineInBlock)
+        scopes.set(name, childScope)
+    }
+
+    calculateScopeDefinitions(stmt.blockDeclarations)
+
+    return childScope
 }
 
 

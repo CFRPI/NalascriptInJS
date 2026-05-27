@@ -15,13 +15,16 @@ function assertVariableExistWhenUsedHelper(declaration: Declaration, lineInBlock
     switch (declaration.declarationType) {
         case "statement":
             assertVariableExistWhenUsedStmt(declaration.value, lineInBlock, scopeName, scopes)
+            break
         case "function":
+            assertVariableExistWhenUsedStmt(declaration.body, lineInBlock, scopeName, scopes)
             break
     }
 }
 
 function assertVariableExistWhenUsedStmt(stmt: Statement, lineInBlock: number, scopeName: string, scopes: Map<string, Scope>) {
     const scope = scopes.get(scopeName)
+    console.log(scopeName)
     if (!scope) {
         throw new Error("Internal Error asseertVariableExistWhenUsedHelper accessed nonexistent scope")
     }
@@ -66,12 +69,20 @@ function assertVariableExistWhenUsedStmt(stmt: Statement, lineInBlock: number, s
                 assertVariableExistWhenUsedStmt(stmt.elseBranch.block, lineInBlock, scopeName, scopes)
             }
             break
+        case "return":
+            if (stmt.value)
+                validateExpression(stmt.value, scope, lineInBlock)
+            break
+        case "print":
+            validateExpression(stmt.value, scope, lineInBlock)
+            break
         case "block":
             let newScopeName = stmt.blockScopeName.blockName.value;
             stmt.blockDeclarations.forEach((subDecl, index) => {
                 assertVariableExistWhenUsedHelper(subDecl, index, newScopeName, scopes)
             })
             break
+        
         default:
             break;
     }

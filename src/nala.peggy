@@ -25,7 +25,10 @@ functionDeclaration = "fn" _ name: literal _ "(" firstParameter: functionParamet
         declarationType: "function",
         name: name,
         parameters: parameters,
-        returnType: returnType ?? "null",
+        returnType: returnType ?? {
+            varClass: "Raw",
+            type: "void"
+        },
         body: body,
     }
 }
@@ -47,7 +50,7 @@ functionParameter = name: literal _ ":" _ type: varType "" {
     }
 }
 
-statement = forStmt / ifStmt / printStmt / variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
+statement = forStmt / ifStmt / printStmt / returnStmt / variableDeclarationStmt / assignmentStatements / stmtExpr / blockStmt
 
 blockStmt = _ scopeName: blockScopeName? _ '{' _ declarations: line*  _ '}' {
     return {
@@ -202,6 +205,14 @@ elseStmt = "else" _ block: blockStmt {
         type: "statement",
         statementType: "branchWithoutCondition",
         block: block
+    }
+}
+
+returnStmt = "return" _ value: expression? {
+    return {
+        type: "statement",
+        statementType: "return",
+        value: value
     }
 }
 

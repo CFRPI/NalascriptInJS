@@ -5,6 +5,7 @@ import { typeAnnotateAST } from "./typeChecking/annotateExpressionTypes"
 import { calculateScopeDefinitions, NSReferenceError } from "./typeChecking/calculateDefinitionScopes"
 import { assertVariablesExistWhenUsed } from "./typeChecking/assertVariablesExist"
 import { Declaration } from "./ast/declaration"
+import { typeCheckAST } from "./typeChecking/typeCheck"
 
 
 const sourceCode = readFileSync("examples/test1.nala").toString()
@@ -16,7 +17,8 @@ try {
     typeAnnotateAST(ast);
     let staticScopes = calculateScopeDefinitions(ast);
     assertVariablesExistWhenUsed(ast, staticScopes);
-    // fills in variable & function call types
+    typeAnnotateAST(ast, null, staticScopes)
+    typeCheckAST(ast, staticScopes)
     writeFileSync("output/ast.json", JSON.stringify(ast, null, 4));
 } catch (e: any) {
     if (e instanceof NSTypeError) {

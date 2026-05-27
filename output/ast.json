@@ -1,8 +1,45 @@
 [
     {
         "type": "declaration",
-        "declarationType": "statement",
-        "value": {
+        "declarationType": "function",
+        "name": {
+            "type": "value",
+            "valueType": "literal",
+            "value": "test"
+        },
+        "parameters": [
+            {
+                "type": "declaration",
+                "declarationType": "parameter",
+                "name": {
+                    "type": "value",
+                    "valueType": "literal",
+                    "value": "a"
+                },
+                "dataType": {
+                    "varClass": "Raw",
+                    "type": "i32"
+                }
+            },
+            {
+                "type": "declaration",
+                "declarationType": "parameter",
+                "name": {
+                    "type": "value",
+                    "valueType": "literal",
+                    "value": "b"
+                },
+                "dataType": {
+                    "varClass": "Raw",
+                    "type": "f32"
+                }
+            }
+        ],
+        "returnType": {
+            "varClass": "Raw",
+            "type": "f32"
+        },
+        "body": {
             "type": "statement",
             "statementType": "block",
             "blockScopeName": {
@@ -10,66 +47,22 @@
                 "blockName": {
                     "type": "value",
                     "valueType": "literal",
-                    "value": "9380220902409904-Anonymous"
+                    "value": "46076678655138537-Anonymous"
                 }
             },
             "blockDeclarations": [
-                {
-                    "type": "declaration",
-                    "declarationType": "statement",
-                    "value": {
-                        "type": "statement",
-                        "statementType": "variableDeclaration",
-                        "variableName": {
-                            "type": "value",
-                            "valueType": "literal",
-                            "value": "a"
-                        },
-                        "variableType": {
-                            "varClass": "Raw",
-                            "type": "i32"
-                        },
-                        "variableScopeDefinition": null,
-                        "value": {
-                            "type": "expression",
-                            "value": {
-                                "type": "value",
-                                "valueType": "integer",
-                                "value": 5,
-                                "dataType": {
-                                    "varClass": "Raw",
-                                    "type": "i32"
-                                }
-                            }
-                        }
-                    }
-                },
                 {
                     "type": "declaration",
                     "declarationType": "function",
                     "name": {
                         "type": "value",
                         "valueType": "literal",
-                        "value": "sayHi"
+                        "value": "inner"
                     },
-                    "parameters": [
-                        {
-                            "type": "declaration",
-                            "declarationType": "parameter",
-                            "name": {
-                                "type": "value",
-                                "valueType": "literal",
-                                "value": "name"
-                            },
-                            "dataType": {
-                                "varClass": "Raw",
-                                "type": "str"
-                            }
-                        }
-                    ],
+                    "parameters": [],
                     "returnType": {
                         "varClass": "Raw",
-                        "type": "str"
+                        "type": "f32"
                     },
                     "body": {
                         "type": "statement",
@@ -79,7 +72,7 @@
                             "blockName": {
                                 "type": "value",
                                 "valueType": "literal",
-                                "value": "5705636751389446-Anonymous"
+                                "value": "5225293220314463-Anonymous"
                             }
                         },
                         "blockDeclarations": [
@@ -88,7 +81,7 @@
                                 "declarationType": "statement",
                                 "value": {
                                     "type": "statement",
-                                    "statementType": "print",
+                                    "statementType": "return",
                                     "value": {
                                         "type": "expression",
                                         "value": {
@@ -96,31 +89,32 @@
                                             "operator": "+",
                                             "left": {
                                                 "type": "value",
-                                                "valueType": "string",
-                                                "value": "Hello ",
+                                                "valueType": "integer",
+                                                "value": 1,
                                                 "dataType": {
                                                     "varClass": "Raw",
-                                                    "type": "str"
+                                                    "type": "i32"
                                                 }
                                             },
                                             "right": {
                                                 "type": "value",
-                                                "valueType": "literal",
-                                                "value": "name",
+                                                "valueType": "integer",
+                                                "value": 1,
                                                 "dataType": {
                                                     "varClass": "Raw",
-                                                    "type": "null"
+                                                    "type": "i32"
                                                 }
                                             },
                                             "dataType": {
                                                 "varClass": "Raw",
-                                                "type": "null"
+                                                "type": "i32"
                                             }
                                         }
                                     }
                                 }
                             }
-                        ]
+                        ],
+                        "staticScope": {}
                     }
                 },
                 {
@@ -128,125 +122,43 @@
                     "declarationType": "statement",
                     "value": {
                         "type": "statement",
-                        "statementType": "variableDeclaration",
-                        "variableName": {
-                            "type": "value",
-                            "valueType": "literal",
-                            "value": "x"
-                        },
-                        "variableType": {
-                            "varClass": "Raw",
-                            "type": "null"
-                        },
-                        "variableScopeDefinition": null,
+                        "statementType": "return",
                         "value": {
                             "type": "expression",
                             "value": {
-                                "type": "value",
-                                "valueType": "functionCall",
-                                "name": {
+                                "type": "binary",
+                                "operator": "+",
+                                "left": {
                                     "type": "value",
-                                    "valueType": "literal",
-                                    "value": "sayHi"
-                                },
-                                "arguments": [
-                                    {
-                                        "type": "expression",
-                                        "value": {
-                                            "type": "value",
-                                            "valueType": "string",
-                                            "value": "Connor"
-                                        }
+                                    "valueType": "functionCall",
+                                    "name": {
+                                        "type": "value",
+                                        "valueType": "literal",
+                                        "value": "inner"
+                                    },
+                                    "arguments": [],
+                                    "dataType": {
+                                        "varClass": "Raw",
+                                        "type": "f32"
                                     }
-                                ],
-                                "dataType": {
-                                    "varClass": "Raw",
-                                    "type": "null"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "declaration",
-                    "declarationType": "statement",
-                    "value": {
-                        "type": "statement",
-                        "statementType": "variableDeclaration",
-                        "variableName": {
-                            "type": "value",
-                            "valueType": "literal",
-                            "value": "y"
-                        },
-                        "variableType": {
-                            "varClass": "Raw",
-                            "type": "null"
-                        },
-                        "variableScopeDefinition": null,
-                        "value": {
-                            "type": "expression",
-                            "value": {
-                                "type": "value",
-                                "valueType": "literal",
-                                "value": "x",
-                                "dataType": {
-                                    "varClass": "Raw",
-                                    "type": "null"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "declaration",
-                    "declarationType": "statement",
-                    "value": {
-                        "type": "statement",
-                        "statementType": "variableDeclaration",
-                        "variableName": {
-                            "type": "value",
-                            "valueType": "literal",
-                            "value": "z"
-                        },
-                        "variableType": {
-                            "varClass": "Raw",
-                            "type": "null"
-                        },
-                        "variableScopeDefinition": null,
-                        "value": {
-                            "type": "expression",
-                            "value": {
-                                "type": "value",
-                                "valueType": "literal",
-                                "value": "sayHi",
-                                "dataType": {
-                                    "varClass": "Raw",
-                                    "type": "null"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "declaration",
-                    "declarationType": "statement",
-                    "value": {
-                        "type": "statement",
-                        "statementType": "expression",
-                        "value": {
-                            "type": "expression",
-                            "value": {
-                                "type": "value",
-                                "valueType": "functionCall",
-                                "name": {
-                                    "type": "value",
-                                    "valueType": "literal",
-                                    "value": "z"
                                 },
-                                "arguments": [],
+                                "right": {
+                                    "type": "value",
+                                    "valueType": "functionCall",
+                                    "name": {
+                                        "type": "value",
+                                        "valueType": "literal",
+                                        "value": "inner"
+                                    },
+                                    "arguments": [],
+                                    "dataType": {
+                                        "varClass": "Raw",
+                                        "type": "f32"
+                                    }
+                                },
                                 "dataType": {
                                     "varClass": "Raw",
-                                    "type": "null"
+                                    "type": "i32"
                                 }
                             }
                         }
@@ -262,52 +174,22 @@
                     },
                     "line": 0
                 },
-                "sayHi": {
+                "b": {
+                    "definitionType": "Variable",
+                    "varType": {
+                        "varClass": "Raw",
+                        "type": "f32"
+                    },
+                    "line": 0
+                },
+                "inner": {
                     "definitionType": "Function",
-                    "parameters": [
-                        {
-                            "type": "declaration",
-                            "declarationType": "parameter",
-                            "name": {
-                                "type": "value",
-                                "valueType": "literal",
-                                "value": "name"
-                            },
-                            "dataType": {
-                                "varClass": "Raw",
-                                "type": "str"
-                            }
-                        }
-                    ],
+                    "parameters": [],
                     "returnType": {
                         "varClass": "Raw",
-                        "type": "str"
+                        "type": "f32"
                     },
-                    "line": 1
-                },
-                "x": {
-                    "definitionType": "Variable",
-                    "varType": {
-                        "varClass": "Raw",
-                        "type": "str"
-                    },
-                    "line": 2
-                },
-                "y": {
-                    "definitionType": "Variable",
-                    "varType": {
-                        "varClass": "Raw",
-                        "type": "str"
-                    },
-                    "line": 3
-                },
-                "z": {
-                    "definitionType": "Variable",
-                    "varType": {
-                        "varClass": "Function",
-                        "name": "sayHi"
-                    },
-                    "line": 4
+                    "line": 0
                 }
             }
         }

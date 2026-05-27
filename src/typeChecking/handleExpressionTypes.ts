@@ -29,6 +29,14 @@ export function handleBinary(
 
     const arithmeticOperators: BinaryOperator[] = ["+", "-", "*", "/", "%"];
 
+    // used for errors
+    let leftTypeString = "[Function]"
+    let rightTypeString = "[Function]"
+    if (leftType.varClass == "Raw")
+        leftTypeString = leftType.type
+    if (rightType.varClass == "Raw")
+        rightTypeString = rightType.type
+
     if (isNull(leftType) || isNull(rightType))
         return createRawType("null")
 
@@ -84,13 +92,13 @@ export function handleBinary(
         } else if (isString(leftType) && isString(rightType)) {
             return createRawType("bool")
         } else {
-            throw new NSTypeError(`Cannot use operator '${operator}' between data types '${leftType}' and '${rightType}'`)
+            throw new NSTypeError(`Cannot use operator '${operator}' between data types '${leftTypeString}' and '${rightTypeString}'`)
         }
     }
 
     if (logicalOperators.includes(operator)) {
         if (!isBoolean(leftType) || !isBoolean(rightType)) {
-            throw new NSTypeError(`Cannot use operator '${operator}' between '${leftType}' and '${rightType}'`)
+            throw new NSTypeError(`Cannot use operator '${operator}' between '${leftTypeString}' and '${rightTypeString}'`)
         } else {
             return createRawType("bool")
         }
@@ -120,9 +128,13 @@ export function handleUnary(type: NSReturnType, operator: UnaryOperator): NSRetu
     if (isNull(type))
         return createRawType("null")
 
+    let typeString = "[Function]"
+    if (type.varClass == "Raw")
+        typeString = type.type
+
     if (operator == "-" && isNumeric(type)) {
         if (isUnigned(type)) {
-            throw new NSTypeError(`Cannot negate type '${type}'`)
+            throw new NSTypeError(`Cannot negate type '${typeString}'`)
         }
 
         return type;
@@ -130,7 +142,7 @@ export function handleUnary(type: NSReturnType, operator: UnaryOperator): NSRetu
         return createRawType("bool")
     }
 
-    throw new NSTypeError(`Cannot use operator '${operator} with type '${type}''`);
+    throw new NSTypeError(`Cannot use operator '${operator} with type '${typeString}''`);
 }
 
 export function isVoid(type: NSReturnType) {

@@ -88,8 +88,13 @@ function typeAnnotateStatement(statement: Statement, lineNum: number, scopeName:
                 }
                 
                 break
+            case "return":
+                if (statement.value)
+                    typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
+                break
             case "expression":
                 typeCheckExpression(statement.value.value, lineNum, scopeName, scopes)
+                break
             default:
                 break
         }

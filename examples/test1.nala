@@ -1,12 +1,7 @@
-{
-    let a = 5
-    fn sayHi(name: str): str {
-        print "Hello " + name
+fn test(a: i32, b: f32): f32 {
+    fn inner(): f32 {
+        return 1 + 1
     }
 
-    let x = sayHi("Connor")
-    let y = x
-    let z = sayHi
-
-    z()
+    return inner() + inner()
 }
