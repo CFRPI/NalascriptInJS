@@ -23,7 +23,7 @@ function assertVariableExistWhenUsedHelper(declaration: Declaration, lineInBlock
 }
 
 function assertVariableExistWhenUsedStmt(stmt: Statement, lineInBlock: number, scopeName: string, scopes: Map<string, Scope>) {
-    const scope = scopes.get(scopeName)
+    const scope = scopes.get(scopeName) 
     if (!scope) {
         throw new Error("Internal Error asseertVariableExistWhenUsedHelper accessed nonexistent scope")
     }
