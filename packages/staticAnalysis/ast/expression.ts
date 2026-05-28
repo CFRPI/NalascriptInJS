@@ -1,4 +1,4 @@
-import { NSReturnType } from "./declaration"
+import { type NSReturnType } from "./declaration"
 
 export type RawVarTypes =
     | "u8"

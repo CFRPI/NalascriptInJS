@@ -1,17 +1,20 @@
 {
   "name": "nalascriptinjs",
-  "version": "1.0.0",
-  "main": "index.js",
+  "module": "index.ts",
+  "type": "module",
+  "workspaces": ["packages/*"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src --watch examples --exec bun src/index.ts"
+    "nsc": "bun index.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "dependencies": {
+    "compile": "0.0.2",
+    "parse": "1.0.0",
+    "static-analysis": ""
+  },
   "devDependencies": {
-    "@types/node": "^25.9.1",
-    "bun-types": "^1.3.14"
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }

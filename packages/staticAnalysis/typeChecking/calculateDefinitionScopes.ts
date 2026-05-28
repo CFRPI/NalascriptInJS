@@ -1,6 +1,6 @@
-import { BlockStatement, Statement, StaticScopeTypes, VariableDeclarationStatement } from "../ast/statements";
-import { FunctionCallValue, Value, VarType } from "../ast/expression";
-import { Declaration, FunctionDeclaration } from "../ast/declaration";
+import { type BlockStatement, type Statement, type StaticScopeTypes, type VariableDeclarationStatement } from "../ast/statements";
+import { type FunctionCallValue, type Value, type VarType } from "../ast/expression";
+import { type Declaration, type FunctionDeclaration } from "../ast/declaration";
 import { createRawType, isNull, isVoid, NSTypeError } from "./handleExpressionTypes";
 import { Scope } from "./types/scope";
 import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion";

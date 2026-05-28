@@ -1,6 +1,6 @@
-import { Declaration, NSReturnType } from "../ast/declaration";
-import { ExpressionNode, RawVarType, Value, VariableClass, VarType } from "../ast/expression";
-import { Statement } from "../ast/statements";
+import { type Declaration, type NSReturnType } from "../ast/declaration";
+import { type ExpressionNode, type RawVarType, type Value, VariableClass,type  VarType } from "../ast/expression";
+import { type Statement } from "../ast/statements";
 import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion";
 import { validateTypeCast } from "./validateTypeCasting";
 import { createRawType, handleBinary, handleUnary, isVoid, NSTypeError } from "./handleExpressionTypes";

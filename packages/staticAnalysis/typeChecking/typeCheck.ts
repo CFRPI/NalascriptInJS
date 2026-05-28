@@ -1,11 +1,11 @@
-import { Declaration, NSReturnType } from "../ast/declaration";
-import { Expression, RawVarType, VariableClass, VarType } from "../ast/expression";
-import { BlockStatement, BranchWithCondition, BranchWithoutCondition, Statement } from "../ast/statements";
+import { type Declaration, type NSReturnType } from "../ast/declaration";
+import { type Expression, VariableClass, type VarType } from "../ast/expression";
+import { type BlockStatement, type BranchWithCondition, type BranchWithoutCondition, type Statement } from "../ast/statements";
 import { NSReferenceError } from "./calculateDefinitionScopes";
-import { createRawType, isBoolean, isNull, isNumeric, isVoid, NSTypeError } from "./handleExpressionTypes";
+import { isBoolean, isNumeric, isVoid, NSTypeError } from "./handleExpressionTypes";
 import { VariableDefinition } from "./types/defintion";
 import { Scope } from "./types/scope";
-import { validateTypeCast } from "./validateTypeCasting";
+import { validateTypeCast } from "./validateTypeCasting.ts";
 
 export function typeCheckAST(ast: Declaration[], scopes: Map<string, Scope>) {
     typeCheckASTHelper(ast, "global", scopes);
