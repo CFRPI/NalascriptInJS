@@ -1,5 +1,5 @@
-import { type LiteralValue, type VariableClass, type VarType } from "./expression"
-import { type BlockStatement, type Statement } from "./statements"
+import { type LiteralValue, type VariableClass, type VarType } from "./expression.ts"
+import { type BlockStatement, type Statement } from "./statements.ts"
 
 export type Declaration = StatementDeclaration | FunctionDeclaration
 

@@ -1,4 +1,4 @@
-import { type NSReturnType } from "./declaration"
+import { type NSReturnType } from "./declaration.ts"
 
 export type RawVarTypes =
     | "u32"
@@ -123,5 +123,4 @@ export type ExpressionNode = BinaryExpression | UnaryExpression | Value | TypeCa
 export interface Expression {
     type: "expression"
     value: ExpressionNode
-    dataType?: NSReturnType
 }

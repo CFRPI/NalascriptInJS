@@ -1,8 +1,8 @@
-import { Declaration } from "../ast/declaration";
-import { Expression, ExpressionNode } from "../ast/expression";
-import { AssignmentWithValueStatements, Statement } from "../ast/statements";
-import { NSReferenceError } from "./calculateDefinitionScopes";
-import { Scope } from "./types/scope";
+import { type Declaration } from "../ast/declaration.ts";
+import { type Expression, type ExpressionNode } from "../ast/expression.ts";
+import { type AssignmentWithValueStatements, type Statement } from "../ast/statements.ts";
+import { NSReferenceError } from "./calculateDefinitionScopes.ts";
+import { Scope } from "./types/scope.ts";
 
 export function assertVariablesExistWhenUsed(ast: Declaration[], scopes: Map<string, Scope>) {
     const scopeName = "global"

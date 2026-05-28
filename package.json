@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": ["packages/*"],
   "scripts": {
-    "nsc": "bun index.ts"
+    "nsc": "npx tsx index.ts",
+    "runNS": "npx tsx run.ts"
   },
   "dependencies": {
     "compile": "0.0.2",

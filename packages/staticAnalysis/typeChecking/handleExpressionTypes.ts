@@ -1,5 +1,5 @@
-import { type NSReturnType } from "../ast/declaration";
-import { type BinaryOperator, type RawVarTypes, type UnaryOperator, VariableClass, type VarType } from "../ast/expression";
+import { type NSReturnType } from "../ast/declaration.ts";
+import { type BinaryOperator, type RawVarTypes, type UnaryOperator, VariableClass, type VarType } from "../ast/expression.ts";
 
 export class NSTypeError extends Error {
     constructor(message: string) {

@@ -5,4 +5,4 @@ import peggy from "peggy"
 
 const grammar = readFileSync(resolve("./packages/parse/src/nala.peggy")).toString()
 
-export default peggy.generate(grammar);
+export const parser = peggy.generate(grammar)

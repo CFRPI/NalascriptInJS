@@ -1,9 +1,9 @@
-import { type BlockStatement, type Statement, type StaticScopeTypes, type VariableDeclarationStatement } from "../ast/statements";
-import { type FunctionCallValue, type Value, type VarType } from "../ast/expression";
-import { type Declaration, type FunctionDeclaration } from "../ast/declaration";
-import { createRawType, isNull, isVoid, NSTypeError } from "./handleExpressionTypes";
-import { Scope } from "./types/scope";
-import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion";
+import { type BlockStatement, type Statement, type StaticScopeTypes, type VariableDeclarationStatement } from "../ast/statements.ts";
+import { type FunctionCallValue, type Value, type VarType } from "../ast/expression.ts";
+import { type Declaration, type FunctionDeclaration } from "../ast/declaration.ts";
+import { createRawType, isNull, isVoid, NSTypeError } from "./handleExpressionTypes.ts";
+import { Scope } from "./types/scope.ts";
+import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion.ts";
 
 export class NSReferenceError extends Error {
     constructor(message: string) {

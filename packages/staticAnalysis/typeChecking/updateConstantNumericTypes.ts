@@ -1,9 +1,9 @@
-import { type Declaration, type NSReturnType } from "../ast/declaration";
-import { type ExpressionNode, type RawVarType, type Value, VariableClass,type  VarType } from "../ast/expression";
-import { type AssignmentStatement, type Statement } from "../ast/statements";
-import { VariableDefinition } from "./types/defintion";
-import { createRawType, handleBinary, handleUnary, isFloat, isNumeric, isVoid, NSTypeError } from "./handleExpressionTypes";
-import { Scope } from "./types/scope";
+import { type Declaration, type NSReturnType } from "../ast/declaration.ts";
+import { type ExpressionNode, type Value,type  VarType } from "../ast/expression.ts";
+import { type AssignmentStatement, type Statement } from "../ast/statements.ts";
+import { VariableDefinition } from "./types/defintion.ts";
+import { createRawType, handleBinary, handleUnary, isFloat, isNumeric, isVoid, NSTypeError } from "./handleExpressionTypes.ts";
+import { Scope } from "./types/scope.ts";
 
 export function updateConstantNumericTypes(ast: Declaration[], currentScope?: string | null, scopes?: Map<string, Scope>) {
     let scopeName = currentScope ?? "global"

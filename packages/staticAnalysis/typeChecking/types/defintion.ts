@@ -1,8 +1,8 @@
-import { VarType } from "../../ast/expression"
-import { NSReturnType, Parameter } from "../../ast/declaration"
-import { Scope } from "./scope"
-import { createFunctionType } from "../handleExpressionTypes"
-import { NSReferenceError } from "../calculateDefinitionScopes"
+import { type VarType } from "../../ast/expression.ts"
+import { type NSReturnType, type Parameter } from "../../ast/declaration.ts"
+import { Scope } from "./scope.ts"
+import { createFunctionType } from "../handleExpressionTypes.ts"
+import { NSReferenceError } from "../calculateDefinitionScopes.ts"
 
 export enum DefinitionType {
     variable="variable", function="function"

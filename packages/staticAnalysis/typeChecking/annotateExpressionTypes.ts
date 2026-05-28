@@ -1,10 +1,10 @@
-import { type Declaration, type NSReturnType } from "../ast/declaration";
-import { type ExpressionNode, type RawVarType, type Value, VariableClass,type  VarType } from "../ast/expression";
-import { type Statement } from "../ast/statements";
-import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion";
-import { validateTypeCast } from "./validateTypeCasting";
-import { createRawType, handleBinary, handleUnary, isVoid, NSTypeError } from "./handleExpressionTypes";
-import { Scope } from "./types/scope";
+import { type Declaration, type NSReturnType } from "../ast/declaration.ts";
+import { type ExpressionNode, type RawVarType, type Value, VariableClass,type  VarType } from "../ast/expression.ts";
+import { type Statement } from "../ast/statements.ts";
+import { DefinitionType, FunctionDefinition, VariableDefinition } from "./types/defintion.ts";
+import { validateTypeCast } from "./validateTypeCasting.ts";
+import { createRawType, handleBinary, handleUnary, isVoid, NSTypeError } from "./handleExpressionTypes.ts";
+import { Scope } from "./types/scope.ts";
 
 export function typeAnnotateAST(ast: Declaration[], currentScope?: string | null, scopes?: Map<string, Scope>) {
     let scopeName = currentScope ?? "global"

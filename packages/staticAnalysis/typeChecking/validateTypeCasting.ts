@@ -1,5 +1,5 @@
-import { type NSReturnType } from "../ast/declaration";
-import { bitSizeForType, isBoolean, isFloat, isNumeric, isSigned, isString, isVoid, NSTypeError } from "./handleExpressionTypes";
+import { type NSReturnType } from "../ast/declaration.ts";
+import { bitSizeForType, isBoolean, isFloat, isNumeric, isSigned, isString, isVoid, NSTypeError } from "./handleExpressionTypes.ts";
 
 export function validateTypeCast(preCastType: NSReturnType, postCastType: NSReturnType) {
     if (preCastType.varClass != "Raw" || postCastType.varClass != "Raw")

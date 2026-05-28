@@ -1,5 +1,5 @@
-import { type Declaration, type NSReturnType, type Parameter } from "./declaration"
-import { type Expression, type LiteralValue, type Value, type VarType } from "./expression"
+import { type Declaration, type NSReturnType, type Parameter } from "./declaration.ts"
+import { type Expression, type LiteralValue, type Value, type VarType } from "./expression.ts"
 
 // Scoping definition
 export interface ScopingDefinition {
