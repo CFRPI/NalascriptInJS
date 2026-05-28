@@ -1,5 +1,5 @@
-import { NSReturnType } from "../ast/declaration";
-import { BinaryOperator, RawVarTypes, UnaryOperator, VariableClass, VarType } from "../ast/expression";
+import { type NSReturnType } from "../ast/declaration";
+import { type BinaryOperator, type RawVarTypes, type UnaryOperator, VariableClass, type VarType } from "../ast/expression";
 
 export class NSTypeError extends Error {
     constructor(message: string) {
@@ -45,15 +45,6 @@ export function handleBinary(
             return unsignedForBitSize(maxBitSize(leftType, rightType));
         } else if (isSigned(leftType) && isSigned(rightType)) {
             return signedForBitSize(maxBitSize(leftType, rightType));
-        } else if (isFloat(leftType) && isFloat(rightType)) {
-            return signedForBitSize(maxBitSize(leftType, rightType));
-        }
-
-        if (
-            (isUnigned(leftType) && isSigned(rightType)) ||
-            (isSigned(leftType) && isUnigned(rightType))
-        ) {
-            return signedForBitSize(maxBitSize(leftType, rightType));
         } else if (isFloat(leftType) || isFloat(rightType)) {
             // if this case is checked they are not both floats otherwise a previous
             // case will be run so if either is a float we have a float and signed/unsigned
@@ -61,10 +52,17 @@ export function handleBinary(
             return floatForBitSize(maxBitSize(leftType, rightType));
         }
 
+        if (
+            (isUnigned(leftType) && isSigned(rightType)) ||
+            (isSigned(leftType) && isUnigned(rightType))
+        ) {
+            return signedForBitSize(maxBitSize(leftType, rightType));
+        } 
+
         if (operator == "+" && isString(leftType) && isString(rightType)) {
             return createRawType("str");
         } else if (isString(leftType) || isString(rightType)) {
-            throw new NSTypeError(`Cannot use operator '${operator} with a string'`);
+            throw new NSTypeError(`Cannot use operator '${operator} with a string and non string type'`);
         }
 
         if (isBoolean(leftType) || isBoolean(rightType)) {
@@ -84,11 +82,10 @@ export function handleBinary(
             (isSigned(leftType) && isUnigned(rightType))
         ) {
             return createRawType("bool")
-        } else if ((isFloat(leftType) || isFloat(rightType)) && 
-                isNumeric(leftType) && isNumeric(rightType)) {
-            // if this case is checked they are not both floats otherwise a previous
-            // case will be run so if either is a float we have a float and signed/unsigned
-            return createRawType("bool")
+        } else if (isFloat(leftType) && isNumeric(rightType)) {
+            throw new NSTypeError(`Cannot compare type '${leftTypeString}' with non float type '${rightTypeString}'`)
+        } else if (isFloat(rightType) && isNumeric(leftType)) {
+            throw new NSTypeError(`Cannot compare type '${rightTypeString}' with non float type '${leftTypeString}'`)
         } else if (isString(leftType) && isString(rightType)) {
             return createRawType("bool")
         } else {

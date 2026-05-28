@@ -1,5 +1,5 @@
 import { type NSReturnType } from "../ast/declaration";
-import { bitSizeForType, isBoolean, isFloat, isNumeric, isString, isVoid, NSTypeError } from "./handleExpressionTypes";
+import { bitSizeForType, isBoolean, isFloat, isNumeric, isSigned, isString, isVoid, NSTypeError } from "./handleExpressionTypes";
 
 export function validateTypeCast(preCastType: NSReturnType, postCastType: NSReturnType) {
     if (preCastType.varClass != "Raw" || postCastType.varClass != "Raw")
@@ -18,7 +18,10 @@ export function validateTypeCast(preCastType: NSReturnType, postCastType: NSRetu
         throw new NSTypeError(`Cannot cast type 'bool' to type '${postCastType.type}'. Bools cannot be cast to non bool types`)
 
     if (isFloat(preCastType) && !isFloat(postCastType))
-        throw new NSTypeError(`Cannot cast float type '${preCastType.type}}' to non float type '${postCastType.type}'`)
+        throw new NSTypeError(`Cannot cast float type '${preCastType.type}' to non float type '${postCastType.type}'`)
+
+    if (isSigned(preCastType) && !isSigned(postCastType))
+        throw new NSTypeError(`Cannot cast signed type '${preCastType.type}' to unsigned type '${postCastType.type}'`)
 
     // you cannot cast a number to another number with a lower bit depth
     if (bitSizeForType(postCastType) < bitSizeForType(preCastType)) {

@@ -2,13 +2,16 @@ import parser from "./packages/parse/src/index"
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs"
 import type { Declaration } from "staticAnalysis/ast/declaration"
 import { typeAnnotateAST } from "staticAnalysis/typeChecking/annotateExpressionTypes"
-import { calculateScopeDefinitions } from "staticAnalysis/typeChecking/calculateDefinitionScopes"
+import { calculateScopeDefinitions, NSReferenceError } from "staticAnalysis/typeChecking/calculateDefinitionScopes"
 import { assertVariablesExistWhenUsed } from "staticAnalysis/typeChecking/assertVariablesExist"
 import { typeCheckAST } from "staticAnalysis/typeChecking/typeCheck"
 import compile from "compile"
 import { exit } from "process"
 import { resolve, basename } from "path"
 import { execSync } from "child_process"
+import { updateConstantNumericTypes } from "staticAnalysis/typeChecking/updateConstantNumericTypes"
+import { NSTypeError } from "staticAnalysis/typeChecking/handleExpressionTypes"
+import type { Scope } from "staticAnalysis/typeChecking/types/scope"
 
 
 if (process.argv.length < 4) {
@@ -22,13 +25,27 @@ let programName = basename(inputFileName).split(".")[0]
 const outputFileName = process.argv[3]
 const writeAST = process.argv[4] == "true" || process.argv[4] == "t"
 
-const sourceCode = readFileSync(resolve(inputFileName)).toString()
-let ast = parser.parse(sourceCode) as Declaration[];
-typeAnnotateAST(ast);
-let staticScopes = calculateScopeDefinitions(ast);
-assertVariablesExistWhenUsed(ast, staticScopes);
-typeAnnotateAST(ast, null, staticScopes)
-typeCheckAST(ast, staticScopes)
+let ast: Declaration[]
+let staticScopes: Map<string, Scope>
+try {
+    const sourceCode = readFileSync(resolve(inputFileName)).toString()
+    ast = parser.parse(sourceCode) as Declaration[];
+    typeAnnotateAST(ast);
+    staticScopes = calculateScopeDefinitions(ast);
+    assertVariablesExistWhenUsed(ast, staticScopes);
+    typeAnnotateAST(ast, null, staticScopes)
+    updateConstantNumericTypes(ast, null, staticScopes)
+    typeCheckAST(ast, staticScopes)
+} catch (error: any) {
+    if (error instanceof NSTypeError) {
+        console.error(`Nalascript Type Error:\n${error.message}`)
+    } else if (error instanceof NSReferenceError) {
+        console.error(`Nalascript Reference Error:\n${error.message}`)
+    } else {
+        console.error(`Nalascript Internal Error:\n${error.message}`)
+    }
+    exit(1)
+}
 
 if (!existsSync(".nalascript"))
     mkdirSync(resolve("./.nalascript"))
