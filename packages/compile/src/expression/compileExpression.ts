@@ -1,14 +1,14 @@
-import type { Expression, Value } from "staticAnalysis/ast/expression";
-import { isNumeric } from "staticAnalysis/typeChecking/handleExpressionTypes";
+import type { BinaryExpression, Expression, ExpressionNode } from "staticAnalysis/ast/expression";
 import type { Scope } from "staticAnalysis/typeChecking/types/scope";
 import { handleValue } from "./handleValue";
 import { createIndent } from "../createIndent";
+import { handleBinary } from "./handleBinary";
 
-export function compileExpression(expression: Expression, scopes: Map<string, Scope>, level: number): string {
-    let value = expression.value
+export function compileExpression(expression: ExpressionNode, scopes: Map<string, Scope>, level: number): string {
+    let value = expression
     switch (value.type) {
         case "binary":
-            break
+            return handleBinary(expression as BinaryExpression, scopes, level)
         case "unary":
             break
         case "value":

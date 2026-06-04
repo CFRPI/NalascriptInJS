@@ -8,7 +8,7 @@ export function compileDeclaration(declaration: Declaration, scopes: Map<string,
             // TODO: functions
             break;
         case "statement":
-            return compileStatement(declaration.value, scopes, level)
+            return compileStatement(declaration.value, scopes, level) + "\n"
         default:
             break;
     }

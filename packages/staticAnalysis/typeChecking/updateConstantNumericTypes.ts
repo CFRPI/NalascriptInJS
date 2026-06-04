@@ -1,8 +1,8 @@
 import { type Declaration, type NSReturnType } from "../ast/declaration.ts";
-import { type ExpressionNode, type Value,type  VarType } from "../ast/expression.ts";
+import { type ExpressionNode, type RawVarType, type Value,type  VarType } from "../ast/expression.ts";
 import { type AssignmentStatement, type Statement } from "../ast/statements.ts";
 import { VariableDefinition } from "./types/defintion.ts";
-import { createRawType, handleBinary, handleUnary, isFloat, isNumeric, isVoid, NSTypeError } from "./handleExpressionTypes.ts";
+import { bitSizeForType, createRawType, floatForBitSize, handleBinary, handleUnary, isBoolean, isFloat, isNull, isNumeric, isSigned, isVoid, NSTypeError, signedForBitSize, unsignedForBitSize } from "./handleExpressionTypes.ts";
 import { Scope } from "./types/scope.ts";
 
 export function updateConstantNumericTypes(ast: Declaration[], currentScope?: string | null, scopes?: Map<string, Scope>) {
@@ -76,6 +76,16 @@ function updateNumericTypesInStatement(statement: Statement, lineNum: number, sc
                 if (statement.value && returnType && !isVoid(returnType))
                     updateNumericTypesTo(statement.value.value, lineNum, scopeName, returnType as VarType)
                 break
+            case "expression":
+                let expressionType = statement.value.value.dataType;
+                if (expressionType && !isVoid(expressionType))
+                    updateNumericTypesTo(statement.value.value, lineNum, scopeName, expressionType as VarType)
+                break
+            case "print":
+                let printDatatype = statement.value.value.dataType;
+                if (printDatatype && !isVoid(printDatatype))
+                    updateNumericTypesTo(statement.value.value, lineNum, scopeName, printDatatype as VarType)
+                break
             default:
                 break
         }
@@ -84,24 +94,40 @@ function updateNumericTypesInStatement(statement: Statement, lineNum: number, sc
 export function updateNumericTypesTo(expr: ExpressionNode, lineNum: number, currentScope: string, targetType: VarType) {
     switch (expr.type) {
         case "binary":
-            updateNumericTypesTo(expr.left, lineNum, currentScope, targetType);
-            updateNumericTypesTo(expr.right, lineNum, currentScope, targetType);
             let leftType = expr.left.dataType ?? createRawType("null");
             let rightType = expr.right.dataType ?? createRawType("null");
+            let commonType: VarType = createRawType("null")
+            if (!isNumeric(targetType))
+                commonType = findCompatibleType(leftType, rightType) as VarType
+            if (!isNull(commonType)) {
+                updateNumericTypesTo(expr.left, lineNum, currentScope, commonType);
+                updateNumericTypesTo(expr.right, lineNum, currentScope, commonType);
+            }
             let binaryOperator = expr.operator;
             expr.dataType = handleBinary(leftType, rightType, binaryOperator);
-            break;
-        case "unary":
-            updateNumericTypesTo(expr.value, lineNum, currentScope, targetType);
-            let type = expr.value.dataType ?? createRawType("null");
-            let unaaryOperator = expr.operator;
-            expr.dataType = handleUnary(type, unaaryOperator);
             break;
         case "value":
             expr.dataType = getValueDataType(expr as Value, lineNum, targetType);
             break;
         default:
             break;
+    }
+}
+
+function findCompatibleType(leftType: NSReturnType, rightType: NSReturnType): NSReturnType {
+    if(isBoolean(leftType) || isBoolean(rightType))
+        return createRawType("bool")
+
+    if (!isNumeric(leftType) || !isNumeric(rightType))
+        return createRawType("null")
+
+    const bitSize = Math.max(bitSizeForType(leftType), bitSizeForType(rightType))
+    if (isFloat(leftType) || isFloat(rightType)) {
+        return floatForBitSize(bitSize)
+    } else if (isSigned(leftType) || isSigned(rightType)) {
+        return signedForBitSize(bitSize)
+    } else {
+        return unsignedForBitSize(bitSize)
     }
 }
 

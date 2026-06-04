@@ -12,7 +12,15 @@ export function handlePrint(statement: PrintStatement): string {
 
     switch (dataType.type) {
         case "i32":
-            return "call $log"
+            return "call $nalascript_logi32"
+        case "i64":
+            return "call $nalascript_logi64"
+        case "f32":
+            return "call $nalascript_logf32"
+        case "f64":
+            return "call $nalascript_logf64"
+        case "bool":
+            return "call $nalascript_logbool"
         default:
             break;
     }

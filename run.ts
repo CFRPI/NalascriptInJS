@@ -9,7 +9,10 @@ const importObject = {
     console: {
         log(arg: number) {
             console.log(arg)
-        } 
+        },
+        logBool(arg: number) {
+            console.log(arg == 1)
+        }
     }
 }
 

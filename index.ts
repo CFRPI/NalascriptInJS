@@ -27,9 +27,18 @@ const writeAST = process.argv[4] == "true" || process.argv[4] == "t"
 
 let ast: Declaration[]
 let staticScopes: Map<string, Scope>
+
+if (!existsSync(".nalascript"))
+    mkdirSync(resolve("./.nalascript"))
+
 try {
     const sourceCode = readFileSync(resolve(inputFileName)).toString()
     ast = parser.parse(sourceCode) as Declaration[];
+
+    // initial write for debug if compile fails
+    if (writeAST)
+        writeFileSync(resolve(".nalascript/ast.json"), JSON.stringify(ast, null, 4))
+
     typeAnnotateAST(ast);
     staticScopes = calculateScopeDefinitions(ast);
     assertVariablesExistWhenUsed(ast, staticScopes);
@@ -46,9 +55,6 @@ try {
     }
     exit(1)
 }
-
-if (!existsSync(".nalascript"))
-    mkdirSync(resolve("./.nalascript"))
 
 if (writeAST)
     writeFileSync(resolve(".nalascript/ast.json"), JSON.stringify(ast, null, 4))

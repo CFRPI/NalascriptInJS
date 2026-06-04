@@ -7,10 +7,10 @@ import { handlePrint } from "./handlePrint";
 export function compileStatement(statement: Statement, scopes: Map<string, Scope>, level: number): string {
     switch (statement.statementType) {
         case "print":
-            return compileExpression(statement.value, scopes, level) + "\n" 
+            return compileExpression(statement.value.value, scopes, level) + "\n" 
             + createIndent(level) + handlePrint(statement)
         case "expression":
-            return `${compileExpression(statement.value, scopes, level)}\n${createIndent(level)}drop`
+            return `${compileExpression(statement.value.value, scopes, level)}\n${createIndent(level)}drop`
         default:
             break;
     }
