@@ -19,6 +19,7 @@ print 2 * 4 / 3 + 1
 print 2f * 4f / 3f + 1f
 ```
 $ npm run nsc examples/test1.nala output/output.wasm true
+
 $ npm run runNS output/output.wasm
 prints
 ```
@@ -39,4 +40,5 @@ for let i = 0; i < n; i += 1 {
 print res
 ```
 $ npm run nsc examples/test1.nala output/output.wasm true
+
 Fails to compile since compiler is not done but generates an abstract syntax tree in .nalascript/ast.json
