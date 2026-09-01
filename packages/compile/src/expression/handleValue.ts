@@ -1,4 +1,4 @@
-import { VariableClass, type FloatValue, type IntegerValue, type Value } from "staticAnalysis/ast/expression"
+import { VariableClass, type FloatValue, type IntegerValue, type UnsignedIntegerValue, type Value } from "staticAnalysis/ast/expression.ts"
 
 export function handleValue(value: Value): string {
     let dataType = value.dataType
@@ -7,6 +7,8 @@ export function handleValue(value: Value): string {
 
     switch (value.valueType) {
         case "integer":
+            return handleNumber(value)
+        case "unsignedInteger":
             return handleNumber(value)
         case "float":
             return handleNumber(value)
@@ -23,7 +25,7 @@ export function handleValue(value: Value): string {
     return ""
 }
 
-function handleNumber(value: IntegerValue | FloatValue): string {
+function handleNumber(value: IntegerValue | UnsignedIntegerValue | FloatValue): string {
     if (value.dataType?.varClass == VariableClass.Function)
         return "<Function types not implemented>";
     let numberValue = value.value
@@ -33,11 +35,11 @@ function handleNumber(value: IntegerValue | FloatValue): string {
         case "i64":
             return `i64.const ${numberValue}`
         case "u32":
-            let thirtyTwoBitString = unsignedToSigned(32, value.value)
-            return `u32.const ${thirtyTwoBitString}`
+            let thirtyTwoBitString = unsignedToSigned(value.value, 32)
+            return `i32.const ${thirtyTwoBitString}`
         case "u64":
-            let sixtyFourBitString = unsignedToSigned(64, value.value)
-            return `u64.const ${sixtyFourBitString}`
+            let sixtyFourBitString = unsignedToSigned(value.value, 64)
+            return `i64.const ${sixtyFourBitString}`
         case "f32":
             return `f32.const ${numberValue}`
         case "f64":

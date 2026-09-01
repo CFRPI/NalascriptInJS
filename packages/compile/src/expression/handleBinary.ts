@@ -1,8 +1,8 @@
-import { VariableClass, type BinaryExpression, type RawVarType, type RawVarTypes, type VarType } from "staticAnalysis/ast/expression";
-import { compileExpression } from "./compileExpression";
-import type { Scope } from "staticAnalysis/typeChecking/types/scope";
-import { createIndent } from "../createIndent";
-import { isFloat, isSigned } from "staticAnalysis/typeChecking/handleExpressionTypes";
+import { VariableClass, type BinaryExpression, type RawVarType, type RawVarTypes, type VarType } from "staticAnalysis/ast/expression.ts";
+import { compileExpression } from "./compileExpression.ts";
+import type { Scope } from "staticAnalysis/typeChecking/types/scope.ts";
+import { createIndent } from "../createIndent.ts";
+import { isFloat, isSigned } from "staticAnalysis/typeChecking/handleExpressionTypes.ts";
 
 export function handleBinary(expression: BinaryExpression, scopes: Map<string, Scope>, level: number): string {
     let res = ""

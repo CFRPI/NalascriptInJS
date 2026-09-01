@@ -1,8 +1,8 @@
-import type { BinaryExpression, Expression, ExpressionNode } from "staticAnalysis/ast/expression";
-import type { Scope } from "staticAnalysis/typeChecking/types/scope";
-import { handleValue } from "./handleValue";
-import { createIndent } from "../createIndent";
-import { handleBinary } from "./handleBinary";
+import type { BinaryExpression, Expression, ExpressionNode } from "staticAnalysis/ast/expression.ts";
+import type { Scope } from "staticAnalysis/typeChecking/types/scope.ts";
+import { handleValue } from "./handleValue.ts";
+import { createIndent } from "../createIndent.ts";
+import { handleBinary } from "./handleBinary.ts";
 
 export function compileExpression(expression: ExpressionNode, scopes: Map<string, Scope>, level: number): string {
     let value = expression

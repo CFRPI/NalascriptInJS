@@ -5,7 +5,7 @@ import { typeAnnotateAST } from "staticAnalysis/typeChecking/annotateExpressionT
 import { calculateScopeDefinitions, NSReferenceError } from "staticAnalysis/typeChecking/calculateDefinitionScopes.ts"
 import { assertVariablesExistWhenUsed } from "staticAnalysis/typeChecking/assertVariablesExist.ts"
 import { typeCheckAST } from "staticAnalysis/typeChecking/typeCheck.ts"
-import compile from "compile"
+import compile from "compile/index.ts"
 import { exit } from "process"
 import { resolve, basename } from "path"
 import { execSync } from "child_process"

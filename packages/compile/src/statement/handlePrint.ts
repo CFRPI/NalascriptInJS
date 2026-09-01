@@ -1,6 +1,6 @@
-import { VariableClass } from "staticAnalysis/ast/expression";
-import type { PrintStatement } from "staticAnalysis/ast/statements";
-import { isVoid } from "staticAnalysis/typeChecking/handleExpressionTypes";
+import { VariableClass } from "staticAnalysis/ast/expression.ts";
+import type { PrintStatement } from "staticAnalysis/ast/statements.ts";
+import { isVoid } from "staticAnalysis/typeChecking/handleExpressionTypes.ts";
 
 export function handlePrint(statement: PrintStatement): string {
     const dataType = statement.value.value.dataType

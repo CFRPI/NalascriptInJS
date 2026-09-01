@@ -2,13 +2,14 @@
   "name": "nalascriptinjs",
   "module": "index.ts",
   "type": "module",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "nsc": "npx tsx index.ts",
-    "runNS": "npx tsx run.ts"
+    "nsc": "node index.ts",
+    "runNS": "node run.ts"
   },
   "dependencies": {
-    "compile": "0.0.2",
     "parse": "1.0.0",
     "static-analysis": ""
   },

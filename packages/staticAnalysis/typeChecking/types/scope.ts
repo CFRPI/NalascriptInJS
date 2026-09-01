@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto"
 import { type NSReturnType } from "../../ast/declaration.ts"
 import { type BlockStatement } from "../../ast/statements.ts"
 import { Definition } from "./defintion.ts"
@@ -9,6 +10,7 @@ export class Scope {
     lineInParent: number | null
     blockReturnType: NSReturnType | null
     childScopes: Scope[]
+    id: string
 
     constructor(block: BlockStatement | null, parent: Scope | null, lineInParent: number | null) {
         this.definitions = []
@@ -17,6 +19,7 @@ export class Scope {
         this.lineInParent = lineInParent
         this.blockReturnType = null
         this.childScopes = []
+        this.id = this.generateRandomID(6)
 
         if (this.parent)
             this.parent.addChild(this)
@@ -24,6 +27,17 @@ export class Scope {
         if (this.parent?.blockReturnType) {
             this.setReturnType(this.parent.blockReturnType)
         }
+    }
+
+    generateRandomID(length: number): string {
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let res = ""
+
+        for (let i = 0; i < length; i++) {
+            res += chars[Math.floor(Math.random() * chars.length)]
+        }
+
+        return res
     }
 
     addChild(scope: Scope) {

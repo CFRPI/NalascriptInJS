@@ -401,7 +401,21 @@ literal = first: [a-zA-Z$] rest:[a-zA-Z0-9$]* {
 
 number = float / integer
 
-integer = value: [0-9]+ {
+integer = value: [0-9]+ extension: [uf]? {
+    if (extension == "u") {
+        return {
+            type: "value",
+            valueType: "unsignedInteger",
+            value: parseInt(value.join(""))
+        }
+    } else if (extension == "f") {
+        return {
+            type: "value",
+            valueType: "float",
+            value: parseFloat(value.join(""))
+        }
+    }
+
     return {
         type: "value",
         valueType: "integer",

@@ -4,8 +4,8 @@ import { Scope } from "./scope.ts"
 import { createFunctionType } from "../handleExpressionTypes.ts"
 import { NSReferenceError } from "../calculateDefinitionScopes.ts"
 
-export enum DefinitionType {
-    variable="variable", function="function"
+export const DefinitionType = {
+    variable: "variable", function: "function"
 }
 export class Definition {
     definitionType: string

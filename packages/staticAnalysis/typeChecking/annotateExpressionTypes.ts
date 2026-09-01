@@ -125,7 +125,7 @@ export function typeCheckExpression(expr: ExpressionNode, lineNum: number, curre
             let postCastType = expr.castType;
             validateTypeCast(preCastType, postCastType);
             expr.dataType = postCastType;
-
+            break
         default:
             break;
     }
@@ -157,6 +157,11 @@ function getValueDataType(value: Value, lineNum: number, currentScopeName?: stri
                 varClass: VariableClass.Raw,
                 type: "i32"
             };
+        case "unsignedInteger":
+            return {
+                varClass: VariableClass.Raw,
+                type: "u32"
+            }
         case "functionCall":
             let funcName = value.name.value
             const potentialFuncDefinition = scope?.lookupDefinition(funcName, lineNum)

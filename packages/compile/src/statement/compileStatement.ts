@@ -1,8 +1,8 @@
-import type { Statement } from "staticAnalysis/ast/statements";
-import type { Scope } from "staticAnalysis/typeChecking/types/scope";
-import { compileExpression } from "../expression/compileExpression";
-import { createIndent } from "../createIndent";
-import { handlePrint } from "./handlePrint";
+import type { Statement } from "staticAnalysis/ast/statements.ts";
+import type { Scope } from "staticAnalysis/typeChecking/types/scope.ts";
+import { compileExpression } from "../expression/compileExpression.ts";
+import { createIndent } from "../createIndent.ts";
+import { handlePrint } from "./handlePrint.ts";
 
 export function compileStatement(statement: Statement, scopes: Map<string, Scope>, level: number): string {
     switch (statement.statementType) {

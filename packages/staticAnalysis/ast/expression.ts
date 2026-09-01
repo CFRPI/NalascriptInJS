@@ -11,9 +11,9 @@ export type RawVarTypes =
     | "bool"
     | "null"
 
-export enum VariableClass {
-    Raw = "Raw", Function = "Function"
-}
+export const VariableClass = {
+    Raw: "Raw", Function: "Function"
+} as const;
 
 export interface RawVarType {
     varClass: VariableClass.Raw
@@ -58,6 +58,13 @@ export interface IntegerValue {
     dataType?: VarType
 }
 
+export interface UnsignedIntegerValue {
+    type: "value"
+    valueType: "unsignedInteger"
+    value: number
+    dataType?: VarType
+}
+
 export interface FloatValue {
     type: "value"
     valueType: "float"
@@ -90,6 +97,7 @@ export interface FunctionCallValue {
 export type Value =
     | LiteralValue
     | IntegerValue
+    | UnsignedIntegerValue
     | FloatValue
     | BooleanValue
     | StringValue

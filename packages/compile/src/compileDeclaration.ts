@@ -1,6 +1,6 @@
-import type { Declaration } from "staticAnalysis/ast/declaration";
-import type { Scope } from "staticAnalysis/typeChecking/types/scope";
-import { compileStatement } from "./statement/compileStatement";
+import type { Declaration } from "staticAnalysis/ast/declaration.ts";
+import type { Scope } from "staticAnalysis/typeChecking/types/scope.ts";
+import { compileStatement } from "./statement/compileStatement.ts";
 
 export function compileDeclaration(declaration: Declaration, scopes: Map<string, Scope>, level: number): string {
     switch (declaration.declarationType) {

@@ -1,6 +1,6 @@
-import type { Declaration } from "staticAnalysis/ast/declaration";
-import type { Scope } from "staticAnalysis/typeChecking/types/scope";
-import { compileDeclaration } from "./compileDeclaration";
+import type { Declaration } from "staticAnalysis/ast/declaration.ts";
+import type { Scope } from "staticAnalysis/typeChecking/types/scope.ts";
+import { compileDeclaration } from "./compileDeclaration.ts";
 
 export default function(decls: Declaration[], scopes: Map<string, Scope>): string {
     return `(module
